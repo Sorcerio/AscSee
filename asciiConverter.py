@@ -130,6 +130,7 @@ def mapPixelsToAscii(image):
 # Converts an image at the specified filepath to an ASCII image object
 # filepath -> The path to a valid image file with extension.
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
+# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
 # textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
 # backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
@@ -151,6 +152,7 @@ def imagePathToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = [
 # Converts the provided image to an ASCII image object
 # inputImage -> A PIL image object to convert to ASCII
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
+# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
 # textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
 # backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
@@ -223,27 +225,38 @@ def calculateAspectRatio(width, height):
 
 # Converts a provided video file into an OpenCV video object
 # NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 30fps with a length of
-# 1 minute can take (estimated on local hardware) around 10 hours.
-def videoToAsciiVideo(filepath, fontName, fontSize):
+#       1 minute can take, estimated on local hardware, around 10 hours.
+# filepath -> The video file to convert with extension with .mp4 extension.
+# outputPath -> The output path file to save the converted video to with .mp4 extension.
+# fontName -> The path to a valid font file with extension. Only .ttf files supported.
+# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
+def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize):
     # Report the video file being loaded
-    print('Loading video file...')
+    print('> Loading video file...')
 
     # Capture the video file
     vidCap = cv.VideoCapture(filepath)
 
     # Report the video file loaded and frame processing start
-    print('Loaded video file.')
-    print('Processing video frames, this may take a while...')
+    print('> Loaded video file.')
+    print('> Processing video frames, this may take a while...')
 
-    # Get the frame count of the video
+    # Get the details of the video
     vidFrameCount = int(vidCap.get(cv.CAP_PROP_FRAME_COUNT))
+    vidFrameSpeed = vidCap.get(cv.CAP_PROP_FPS)
+    vidW = int(vidCap.get(cv.CAP_PROP_FRAME_WIDTH))
+    vidH = int(vidCap.get(cv.CAP_PROP_FRAME_HEIGHT))
+
+    # Open the video writer
+    vidWritterFourCC = cv.VideoWriter_fourcc(*'MP4V') # MP4V, X264
+    vidWritter = cv.VideoWriter(outputPath, vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
 
     # Enter the frame loop
     moreFrames = True
-    frameCount = 0
+    frameCount = 1
     while(moreFrames):
         # Report the frame being processed
-        print('Processing frame '+str(frameCount)+'/'+str(vidFrameCount))
+        print('> Processing frame '+str(frameCount)+'/'+str(vidFrameCount))
 
         # Capture the current frame
         moreFrames, imageCv = vidCap.read()
@@ -253,8 +266,17 @@ def videoToAsciiVideo(filepath, fontName, fontSize):
             # Convert the CV image to a Pil image
             imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
-            # TODO: Convert this to an inline to build the new video file out of the modified frames
-            # TEMP: Process the image to a file
+            # Convert the Pil image to an ASCII image in Pil format
+            imageAscii = imageToAsciiImage(imagePil, fontName, fontSize)
+
+            # Convert the ASCII image to a numpy array
+            imageAsciiArray = np.array(imageAscii)
+
+            # Convert the image back to a CV image
+            imageCvAscii = cv.cvtColor(imageAsciiArray, cv.COLOR_RGB2BGR)
+
+            # Send the image to the video writter
+            vidWritter.write(imageCvAscii)
         else:
             # Exit the loop
             break
@@ -262,14 +284,15 @@ def videoToAsciiVideo(filepath, fontName, fontSize):
         # Iterate the count
         frameCount += 1
 
-    # Release the video
+    # Release the video processors
     vidCap.release()
+    vidWritter.release()
 
     # Make sure any CV windows are closed
     cv.destroyAllWindows()
 
     # Report the frames have been process
-    print('Video frames processed.')
+    print('> Video frames processed.')
 
 ## Deployment Functions
 # Processes a single filepath into an ASCII image rendered .png file
