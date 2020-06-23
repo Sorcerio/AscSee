@@ -14,10 +14,10 @@ def main():
     # Set the ASCII Converter to Verbose
     ac.toggleVerbose()
 
-    batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg'])
+    # batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg'])
     # batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'])
     # processImageToAscii('testImage.jpg', 'output')
-    # processImageToAscii('testImage2.png', 'output')
+    processImageToAscii('testImage2.png', 'output')
     # processImageToAscii('testImage3.jpg', 'output')
 
 # Functions

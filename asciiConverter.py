@@ -46,7 +46,7 @@ def toggleVerbose():
         print('Verbose mode is on')
 
 # Converts the provided 
-def imageToAsciiList(image):
+def imageToAsciiList(image, warp = 0):
     # Check if verbose status should be stated
     if VERBOSE:
         print('Converting image to ASCII...')
@@ -59,6 +59,10 @@ def imageToAsciiList(image):
 
     # Map the pixels to ASCII characters
     imageChars = mapPixelsToAscii(image)
+
+    # Check if a subsampling size is set
+    if warp > 0:
+        imageChars = imageChars[0::warp]
 
     # Count the number of characters in the image
     imageCharsCount = len(imageChars)
@@ -79,19 +83,15 @@ def imageToAsciiList(image):
 # subsample -> If not 0, starts with the first index in the final ASCII generation and creates a subsample of only
 #               the nth values. This is useful because when generating the ASCII, the image will have an equal number
 #               of characters as the image size in pixels. (default: 0, ie: subsample disabled)
-def imageToAsciiString(image, newWidth = 100, subsamble = 0):
+def imageToAsciiString(image, newWidth = 100, warp = 0):
     # Scale the image down to the decided width
     image = scaleImage(image, newWidth)
 
     # Build the ascii image list
-    imageAsciiList = imageToAsciiList(image)
+    imageAsciiList = imageToAsciiList(image, warp)
 
     # Convert the image ASCII lists to a string seperated by new lines
     imageAscii = '\n'.join(imageAsciiList)
-
-    # Check if a subsampling size is set
-    if subsamble > 0:
-        imageAscii = imageAscii[0::subsamble]
 
     # Send the converted image back
     return imageAscii
@@ -128,7 +128,7 @@ def mapPixelsToAscii(image):
     return ''.join(pixelChars)
 
 # Converts an image at the specified filepath to an ASCII image file
-def imageToAsciiImage(filepath, fontName, fontSize):
+def imageToAsciiImage(filepath, fontName, fontSize, warp = 0):
     # Mark the start time
     exStartTime = time.time()
 
@@ -141,7 +141,7 @@ def imageToAsciiImage(filepath, fontName, fontSize):
         (inputW, inputH) = inputImage.size
 
         # Build the ascii image list
-        imageAsciiList = imageToAsciiList(inputImage) # TODO: Add subsample to this function (but call it warp)
+        imageAsciiList = imageToAsciiList(inputImage, warp)
 
         # Check if verbose status should be stated
         if VERBOSE:
@@ -196,7 +196,6 @@ def imageToAsciiImage(filepath, fontName, fontSize):
     except Exception as err:
         # Print the problem
         print("Image at "+str(inputImage)+" could not opened.")
-        print(err)
 
 # Calculates and return the aspect ratio of the provided size values
 def calculateAspectRatio(width, height):
