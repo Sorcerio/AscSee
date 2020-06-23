@@ -15,15 +15,15 @@ def main():
     ac.toggleVerbose()
 
     # batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'])
-    processImageToAscii('testImage.jpg', 'output')
-    # processImageToAscii('testImage2.png', 'output')
+    # processImageToAscii('testImage.jpg', 'output')
+    processImageToAscii('testImage2.png', 'output')
     # processImageToAscii('testImage3.jpg', 'output')
 
 # Functions
 def processImageToAscii(filepath, outputName):
     # Process the image to an ASCII image
     # outputImage = ac.imageToAsciiImage(filepath, FONT_FONT, FONT_SIZE)
-    outputImage = ac.imageToAsciiImage(filepath, FONT_FONT)
+    outputImage = ac.imageToAsciiImage(filepath, FONT_FONT, FONT_SIZE)
 
     # Save the image
     outputImage.save(str(outputName)+'.png')

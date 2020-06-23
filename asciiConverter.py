@@ -45,19 +45,14 @@ def toggleVerbose():
     if VERBOSE:
         print('Verbose mode is on')
 
-# Converts the provided image to an ASCII representation
-# image -> The image to convert to ASCII
-# newWidth -> The width to return the image at. (default: 100)
-# subsample -> If not 0, starts with the first index in the final ASCII generation and creates a subsample of only
-#               the nth values. This is useful because when generating the ASCII, the image will have an equal number
-#               of characters as the image size in pixels. (default: 0, ie: subsample disabled)
-def imageToAsciiString(image, newWidth = 100, subsamble = 0, ):
+# Converts the provided 
+def imageToAsciiList(image):
     # Check if verbose status should be stated
     if VERBOSE:
         print('Converting image to ASCII...')
 
-    # Scale the image down to the decided width
-    image = scaleImage(image, newWidth)
+    # Get the image's size
+    (imgWidth, imgHeight) = image.size
 
     # Convert the image to grayscale
     image = image.convert('L')
@@ -69,7 +64,27 @@ def imageToAsciiString(image, newWidth = 100, subsamble = 0, ):
     imageCharsCount = len(imageChars)
 
     # Collapse the image characters to fit the width of the image using list compression
-    imageAsciiList = [imageChars[index: index+newWidth] for index in range(0, imageCharsCount, newWidth)]
+    imageAsciiList = [imageChars[index: index+imgWidth] for index in range(0, imageCharsCount, imgWidth)]
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        print('Image to ASCII conversion done.')
+
+    # Return the ascii list
+    return imageAsciiList
+
+# Converts the provided image to an ASCII representation string
+# image -> The image to convert to ASCII
+# newWidth -> The width to return the image at. (default: 100)
+# subsample -> If not 0, starts with the first index in the final ASCII generation and creates a subsample of only
+#               the nth values. This is useful because when generating the ASCII, the image will have an equal number
+#               of characters as the image size in pixels. (default: 0, ie: subsample disabled)
+def imageToAsciiString(image, newWidth = 100, subsamble = 0):
+    # Scale the image down to the decided width
+    image = scaleImage(image, newWidth)
+
+    # Build the ascii image list
+    imageAsciiList = imageToAsciiList(image)
 
     # Convert the image ASCII lists to a string seperated by new lines
     imageAscii = '\n'.join(imageAsciiList)
@@ -77,10 +92,6 @@ def imageToAsciiString(image, newWidth = 100, subsamble = 0, ):
     # Check if a subsampling size is set
     if subsamble > 0:
         imageAscii = imageAscii[0::subsamble]
-
-    # Check if verbose status should be stated
-    if VERBOSE:
-        print('Image to ASCII conversion done.')
 
     # Send the converted image back
     return imageAscii
@@ -117,15 +128,12 @@ def mapPixelsToAscii(image):
     return ''.join(pixelChars)
 
 # Converts an image at the specified filepath to an ASCII image file
-def imageToAsciiImage(filepath, fontName):
+def imageToAsciiImage(filepath, fontName, fontSize):
     # Mark the start time
     exStartTime = time.time()
 
     # # Try to get the input image
     # try:
-
-    # FONT_SIZE
-    fontSize = 16
 
     # Try to get the input image
     inputImage = Image.open(filepath)
@@ -133,13 +141,8 @@ def imageToAsciiImage(filepath, fontName):
     # Get the size of the input image
     (inputW, inputH) = inputImage.size
 
-    inputImage = inputImage.convert('L')
-
-    # Get the ascii string
-    asciiString = mapPixelsToAscii(inputImage)
-
-    # Collapse the image characters to fit the width of the image using list compression
-    imageAsciiList = [asciiString[index: index+inputW] for index in range(0, len(asciiString), inputW)]
+    # Build the ascii image list
+    imageAsciiList = imageToAsciiList(inputImage)
 
     # Print the build image response
     print('Building output image...')
@@ -155,7 +158,6 @@ def imageToAsciiImage(filepath, fontName):
 
     # Loop through the ascii list
     cursorY = 0
-    # for line in imageAsciiList:
     for lineInd in range(0, len(imageAsciiList), fontSize-1):
         # Get the line
         line = imageAsciiList[lineInd]
