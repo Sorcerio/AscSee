@@ -1,17 +1,17 @@
 # ASCII Converter
 # Converts given image files into ASCII stylized images.
 
-# Imports
+## Imports
 from PIL import Image, ImageDraw, ImageFont # pip install Pillow
 # import cv2 as cv # pip install opencv-python
 import math
 import random
 
-# Variables
+## Variables
 USED_CHARS = ['#','?','%','.','S','+','.','*',':',',','@']
 VERBOSE = False
 
-# Example Thread
+## Example Thread
 def example(filepath, newWidth = 100):
     # Enter image conversion try/catch
     try:
@@ -31,7 +31,7 @@ def example(filepath, newWidth = 100):
         # Send back nothing
         return None
 
-# Processing Functions
+## Processing Functions
 # Toggles the verbose flop
 def toggleVerbose():
     # Scope the global
@@ -207,7 +207,40 @@ def calculateAspectRatio(width, height):
     # Return them in a tuple
     return (arW, arH)
 
-# Main Thread Execution
+## Deployment Functions
+# Processes a single filepath into an ASCII image rendered .png file
+def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+    # Process the image to an ASCII image
+    outputImage = imageToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
+
+    # Save the image
+    outputImage.save(str(outputName)+'.png')
+
+# Processes a list of filepaths into ASCII image rendered .png files
+def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the batch process start
+        print('Starting batch process with '+str(len(filepaths))+' images...')
+
+    # Loop through the filepath array
+    i = 1
+    for filepath in filepaths:
+        # Print the image being process
+        print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
+
+        # Process the image
+        processImageToAscii(filepath, ('output'+str(i)), fontFile, fontSize, warp, textColors, backgroundColor)
+
+        # Iterate
+        i = i+1
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the batch process end
+        print('Finished batch process.')
+
+## Main Thread Execution
 if __name__=='__main__':
     # Import System to get parameters
     import sys
