@@ -127,7 +127,7 @@ def mapPixelsToAscii(image):
     # Return the pixel characters list as a joined string
     return ''.join(pixelChars)
 
-# Converts an image at the specified filepath to an ASCII image file
+# Converts an image at the specified filepath to an ASCII image object
 # filepath -> The path to a valid image file with extension.
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
@@ -148,7 +148,7 @@ def imagePathToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = [
         # Return an error image
         return Image.new('RGB', (100, 100), 'red')
 
-# Converts an image at the specified filepath to an ASCII image file
+# Converts the provided image to an ASCII image object
 # inputImage -> A PIL image object to convert to ASCII
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
@@ -221,7 +221,7 @@ def calculateAspectRatio(width, height):
     # Return them in a tuple
     return (arW, arH)
 
-# Converts a provided video file into an ASCII image version.
+# Converts a provided video file into an OpenCV video object
 # NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 30fps with a length of
 # 1 minute can take (estimated on local hardware) around 10 hours.
 def videoToAsciiVideo(filepath, fontName, fontSize):
