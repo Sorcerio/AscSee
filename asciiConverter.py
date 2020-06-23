@@ -45,6 +45,10 @@ def toggleVerbose():
     if VERBOSE:
         print('Verbose mode is on')
 
+# Gets the current status of verbose mode
+def isVerboseOn():
+    return VERBOSE
+
 # Converts the provided 
 def imageToAsciiList(image, warp = 0):
     # Check if verbose status should be stated
