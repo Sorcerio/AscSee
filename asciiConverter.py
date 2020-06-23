@@ -78,15 +78,6 @@ def imageToAsciiString(image, newWidth = 100, subsamble = 0, ):
     if subsamble > 0:
         imageAscii = imageAscii[0::subsamble]
 
-        # # Convert the string to a byte array
-        # iaBytes = bytearray(imageAscii, 'ascii')
-
-        # # Delete for subsampling
-        # del iaBytes[subsamble-1::subsamble]
-
-        # # Assign the subsampled string
-        # imageAscii = str(iaBytes)
-
     # Check if verbose status should be stated
     if VERBOSE:
         print('Image to ASCII conversion done.')
@@ -126,12 +117,15 @@ def mapPixelsToAscii(image):
     return ''.join(pixelChars)
 
 # Converts an image at the specified filepath to an ASCII image file
-def imageToAsciiImage(filepath, fontName, subsample = 7):
+def imageToAsciiImage(filepath, fontName):
     # Mark the start time
     exStartTime = time.time()
 
     # # Try to get the input image
     # try:
+
+    # FONT_SIZE
+    fontSize = 16
 
     # Try to get the input image
     inputImage = Image.open(filepath)
@@ -139,49 +133,44 @@ def imageToAsciiImage(filepath, fontName, subsample = 7):
     # Get the size of the input image
     (inputW, inputH) = inputImage.size
 
-    # Convert the image to ASCII
-    asciiString = imageToAsciiString(inputImage, inputW, subsample)
+    inputImage = inputImage.convert('L')
+
+    # Get the ascii string
+    asciiString = mapPixelsToAscii(inputImage)
+
+    # Collapse the image characters to fit the width of the image using list compression
+    imageAsciiList = [asciiString[index: index+inputW] for index in range(0, len(asciiString), inputW)]
 
     # Print the build image response
     print('Building output image...')
 
-    # FONT SIZE
-    fontSize = 16
-
     # Create an output image
-    outputImage = Image.new('RGB', (inputW*fontSize, inputH*fontSize), 'black')
+    outputImage = Image.new('RGB', (inputW, inputH), 'black')
 
     # Prepare the output image to be drawn on
     outputDraw = ImageDraw.Draw(outputImage)
 
-    print(inputW/fontSize)
-
     # Build the draw font
     font = ImageFont.truetype(fontName, fontSize)
 
-    # Loop through the ascii string
-    cursorX = 0
+    # Loop through the ascii list
     cursorY = 0
-    count = 1
-    for char in asciiString:
-        # Print the loading bar
-        print('Working (char '+str(count)+'/'+str(len(asciiString))+')')
+    # for line in imageAsciiList:
+    for lineInd in range(0, len(imageAsciiList), fontSize-1):
+        # Get the line
+        line = imageAsciiList[lineInd]
 
-        # Draw the text on the line
-        outputDraw.text((cursorX, cursorY), char, 'white', font)
+        # Loop through the appropriate amount of characters for the row
+        cursorX = 0
+        for charInd in range(0, len(line), fontSize-1):
+            # Draw the character
+            outputDraw.text((cursorX, cursorY), line[charInd], 'white', font)
 
-        # Check if at the end of the row
-        # if cursorX >= inputW:
-        if cursorX >= inputW*fontSize:
-            # Move down a row
-            cursorX = 0
-            cursorY = cursorY+fontSize
-        else:
-            # Move to the next column
+            # Iterate x cursor
             cursorX = cursorX+fontSize
 
-        # Iterate the count
-        count = count+1
+        # Increase y cursor
+        cursorY = cursorY+fontSize
 
     # Check if verbose status should be stated
     if VERBOSE:
