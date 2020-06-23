@@ -142,13 +142,13 @@ def imageToAsciiImage(filepath, fontName, fontSize):
     (inputW, inputH) = inputImage.size
 
     # Build the ascii image list
-    imageAsciiList = imageToAsciiList(inputImage)
+    imageAsciiList = imageToAsciiList(inputImage) # TODO: Add subsample to this function (but call it warp)
 
     # Print the build image response
     print('Building output image...')
 
     # Create an output image
-    outputImage = Image.new('RGB', (inputW, inputH), 'black')
+    outputImage = Image.new('RGB', (inputW, inputH), 'black') # TODO: Add color warping option for the background and text
 
     # Prepare the output image to be drawn on
     outputDraw = ImageDraw.Draw(outputImage)
