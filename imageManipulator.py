@@ -24,7 +24,7 @@ def main():
 # Processes a single filepath into an ASCII image rendered .png file
 def processImageToAscii(filepath, outputName):
     # Process the image to an ASCII image
-    outputImage = ac.imageToAsciiImage(filepath, FONT_FONT, FONT_SIZE, textColors=['aqua', 'crimson', 'darkorange', 'deeppink', 'lawngreen', 'yellow'])
+    outputImage = ac.imageToAsciiImage(filepath, FONT_FONT, FONT_SIZE, textColors=['black'], backgroundColor='white')
 
     # Save the image
     outputImage.save(str(outputName)+'.png')

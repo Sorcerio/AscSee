@@ -128,7 +128,12 @@ def mapPixelsToAscii(image):
     return ''.join(pixelChars)
 
 # Converts an image at the specified filepath to an ASCII image file
-def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white']):
+# filepath -> The path to a valid image file with extension.
+# fontName -> The path to a valid font file with extension. Only .ttf files supported.
+# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
+# textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
+# backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
+def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
     # Mark the start time
     exStartTime = time.time()
 
@@ -149,7 +154,7 @@ def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['whi
             print('Building output image...')
 
         # Create an output image
-        outputImage = Image.new('RGB', (inputW, inputH), 'black') # TODO: Add color warping option for the background and text
+        outputImage = Image.new('RGB', (inputW, inputH), backgroundColor)
 
         # Prepare the output image to be drawn on
         outputDraw = ImageDraw.Draw(outputImage)
