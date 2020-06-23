@@ -1,10 +1,16 @@
 # General Utilities v1.0 for Python by Brody Childs
 # Allows ease of use though providing generalized methods for commonly used Python code blocks.
 
+# Imports
+from time import time
+
 # Configuration
 TITLE_MARKER_LEFT = "["
 TITLE_MARKER_RIGHT = "]"
 CHECKBOX_INDICATOR = "X"
+
+# Variables
+CLOCKER_TIMES = {}
 
 # Configuration Functions
 # Allows the left Title Marker to be set to a custom character
@@ -341,3 +347,122 @@ def checkboxMenu(title, choices, lastOption, func):
 
         # Apply answer to main menu functions
         func(answer)
+
+# Starts a clocker (a time tracker) for the provided key that will remain in memory until it is requested
+#   with the endClocker(...) function.
+# key -> A unique string key that this specific clocker will be referenced by
+# message -> A string message to display once the clocker starts. Can also supply None or an empty string
+#               to display nothing.
+def startClocker(key, message = 'Started clocking.'):
+    # Scope the global
+    global CLOCKER_TIMES
+
+    # Add the current time to the log
+    CLOCKER_TIMES[str(key)] = time()
+
+    # Check if message was supplied
+    if message != None and message != '':
+        # Print the message
+        print(message)
+
+# Finishes a clocker (a time tracker) started by the startClocker(...) function and, by default, removes
+#   the now used clocker from memory. Then returns and, optionally, prints the time ellapsed in the format
+#   (by default) of '# Days, # Hours, # Minutes, # Seconds'. If a value of time is 0, it will not be show.
+#   If a value of time is 1, it's textual representation with lack the trailing 's'.
+# key -> A unique string key that this specific clocker will be referenced by
+# message -> A string message to display once the clocker starts. Can also supply None or an empty string
+#               to display nothing. Remember to end you message with a space if you want to seperate it
+#               visually from the clocker string
+# seperator -> A string to seperate the time string if printed.
+# retain -> Boolean that if true keeps the clocker for the provided key in memory for future reference.
+def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False):
+    # Scope the global
+    global CLOCKER_TIMES
+
+    # Check to see if the key is in the clocker times
+    if key in CLOCKER_TIMES:
+        # Check if the key should be removed from clocker times
+        timeStart = None
+        if not retain:
+            # Get the time for the key and remove it
+            timeStart = CLOCKER_TIMES.pop(str(key), None)
+        else:
+            # Get the time for the key
+            timeStart = CLOCKER_TIMES[str(key)]
+
+        # Caculate the number of seconds between the start and now
+        timeEllapsed = time()-timeStart
+
+        # Calculate the number of days
+        days = timeEllapsed//86400
+
+        # Calculate the number of hours
+        hours = (timeEllapsed-days*86400)//3600
+
+        # Calculate the number of minutes
+        minutes = (timeEllapsed-days*86400-hours*3600)//60
+
+        # Calculate the number of seconds
+        seconds = timeEllapsed-days*86400-hours*3600-minutes*60
+
+        # Prepare the time string
+        outTime = ''
+
+        # Add the days if needed
+        if days > 0:
+            # Add the days text
+            outTime += ('%.0f day' %  days)
+
+            # Check if an S is needed
+            if days != 1:
+                outTime += 's'
+
+            # Add the seperator
+            outTime += seperator
+
+        # Add the hours if needed
+        if hours > 0:
+            # Add the hours text
+            outTime += ('%.0f hour' %  hours)
+
+            # Check if an S is needed
+            if hours != 1:
+                outTime += 's'
+
+            # Add the seperator
+            outTime += seperator
+
+        # Add the minutes if needed
+        if minutes > 0:
+            # Add the minutes text
+            outTime += ('%.0f minute' %  minutes)
+
+            # Check if an S is needed
+            if minutes != 1:
+                outTime += 's'
+
+            # Add the seperator
+            outTime += seperator
+
+        # Add the seconds if needed
+        if seconds > 0:
+            # Add the seconds text
+            outTime += ('%.2f second' %  seconds)
+
+            # Check if an S is needed
+            if seconds != 1:
+                outTime += 's'
+
+            # Add the seperator
+            outTime += seperator
+
+        # Check if a message was supplied
+        if message != None and message != '':
+            # Print the message with the out time
+            print(message+outTime)
+
+        # Return the values
+        return (days, hours, minutes, seconds)
+    else:
+        # Report the problem
+        print('GeneralUtlities: No clocker exists for the key, \''+str(key)+'\'')

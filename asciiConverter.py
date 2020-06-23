@@ -4,7 +4,6 @@
 # Imports
 from PIL import Image, ImageDraw, ImageFont # pip install Pillow
 # import cv2 as cv # pip install opencv-python
-import time
 import math
 import random
 
@@ -134,9 +133,6 @@ def mapPixelsToAscii(image):
 # textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
 # backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
 def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
-    # Mark the start time
-    exStartTime = time.time()
-
     # Try to get the input image
     try:
         # Try to get the input image
@@ -192,9 +188,6 @@ def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['whi
         if VERBOSE:
             # Print the build image done response
             print('Done building output image.')
-
-            # Print the execution time
-            print('Image converted in: %.2f seconds' % (time.time()-exStartTime))
 
         # Return the output image
         return outputImage

@@ -14,11 +14,12 @@ def main():
     # Set the ASCII Converter to Verbose
     ac.toggleVerbose()
 
-    # batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg'])
-    # batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'])
-    # processImageToAscii('testImage.jpg', 'output')
-    processImageToAscii('testImage2.png', 'output')
-    # processImageToAscii('testImage3.jpg', 'output')
+    gu.startClocker('img2ascii')
+
+    # processImageToAscii('testImage2.png', 'output')
+    batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'])
+
+    gu.endClocker('img2ascii')
 
 # Functions
 # Processes a single filepath into an ASCII image rendered .png file
