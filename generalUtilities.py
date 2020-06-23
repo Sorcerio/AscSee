@@ -161,7 +161,7 @@ def managedInputNumber(query, exitPhrase):
                 # Exit loop
                 goodNumber = True
                 break
-            except ValueError as err:
+            except ValueError:
                 # Tell user to fix it
                 print("'"+str(answer)+"' is not a number.")
         else:

@@ -223,14 +223,47 @@ def calculateAspectRatio(width, height):
     # Return them in a tuple
     return (arW, arH)
 
+## Deployment Functions
+# Processes a single filepath into an ASCII image rendered .png file
+def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+    # Process the image to an ASCII image
+    outputImage = imagePathToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
+
+    # Save the image
+    outputImage.save(str(outputName)+'.png')
+
+# Processes a list of filepaths into ASCII image rendered .png files
+def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the batch process start
+        print('Starting batch process with '+str(len(filepaths))+' images...')
+
+    # Loop through the filepath array
+    i = 1
+    for filepath in filepaths:
+        # Print the image being process
+        print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
+
+        # Process the image
+        processImageToAscii(filepath, ('output'+str(i)), fontFile, fontSize, warp, textColors, backgroundColor)
+
+        # Iterate
+        i = i+1
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the batch process end
+        print('Finished batch process.')
+
 # Converts a provided video file into an OpenCV video object
-# NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 30fps with a length of
-#       1 minute can take, estimated on local hardware, around 10 hours.
+# NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of
+#       15 seconds took about 30 minutes to render
 # filepath -> The video file to convert with extension with .mp4 extension.
 # outputPath -> The output path file to save the converted video to with .mp4 extension.
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
 # fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize):
+def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
     # Report the video file being loaded
     print('> Loading video file...')
 
@@ -267,7 +300,7 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize):
             imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
             # Convert the Pil image to an ASCII image in Pil format
-            imageAscii = imageToAsciiImage(imagePil, fontName, fontSize)
+            imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
 
             # Convert the ASCII image to a numpy array
             imageAsciiArray = np.array(imageAscii)
@@ -293,39 +326,6 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize):
 
     # Report the frames have been process
     print('> Video frames processed.')
-
-## Deployment Functions
-# Processes a single filepath into an ASCII image rendered .png file
-def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
-    # Process the image to an ASCII image
-    outputImage = imagePathToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
-
-    # Save the image
-    outputImage.save(str(outputName)+'.png')
-
-# Processes a list of filepaths into ASCII image rendered .png files
-def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the batch process start
-        print('Starting batch process with '+str(len(filepaths))+' images...')
-
-    # Loop through the filepath array
-    i = 1
-    for filepath in filepaths:
-        # Print the image being process
-        print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
-
-        # Process the image
-        processImageToAscii(filepath, ('output'+str(i)), fontFile, fontSize, warp, textColors, backgroundColor)
-
-        # Iterate
-        i = i+1
-
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the batch process end
-        print('Finished batch process.')
 
 ## Main Thread Execution
 if __name__=='__main__':
