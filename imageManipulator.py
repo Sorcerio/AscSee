@@ -57,6 +57,9 @@ def menuSettings(choice):
     # Handle choices
     if choice == '0':
         # Set the font file
+        # Print the current file
+        print('\nCurrent font file is at: '+str(FONT_FONT)+'.')
+
         # Ask for a new file path
         answer = gu.managedInput('Enter the file path to the font file', 'Cancel')
 
@@ -69,6 +72,9 @@ def menuSettings(choice):
             print('\nFont changed to '+str(FONT_FONT))
     elif choice == '1':
         # Set the font size
+        # Print the current size
+        print('\nCurrent font size is: '+str(FONT_SIZE)+'px.')
+
         # Ask for a new font size
         answer = gu.managedInputNumberRange('Enter a new font size', 10000, 1, 'Cancel')
 
