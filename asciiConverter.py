@@ -70,46 +70,12 @@ def imageToAsciiString(image, newWidth = 100, subsamble = 0, ):
     # Collapse the image characters to fit the width of the image using list compression
     imageAsciiList = [imageChars[index: index+newWidth] for index in range(0, imageCharsCount, newWidth)]
 
-    # print(len(imageAscii))
-    # (tw, th) = image.size
-    # tt = tw*th
-    # print(tt)
-    # print(tt/subsamble)
-
     # Convert the image ASCII lists to a string seperated by new lines
     imageAscii = '\n'.join(imageAsciiList)
 
     # Check if a subsampling size is set
     if subsamble > 0:
         imageAscii = imageAscii[0::subsamble]
-        # # Loop through the data
-        # resample = ''
-        # removeIndex = subsamble
-        # skipNext = False
-        # for i in range(len(imageAscii)):
-        #     # Check if the next character is being skipped
-        #     if not skipNext:
-        #         # Get the character
-        #         char = imageAscii[i]
-
-        #         # Check if at a remove index
-        #         if i == removeIndex:
-        #             # Check if the character is a new line
-        #             if char == '\n':
-        #                 # Mark the next character as being removed
-        #                 skipNext = True
-
-        #             # Iterate the remove index
-        #             removeIndex = removeIndex+subsamble
-        #         else:
-        #             # Add the character
-        #             resample = resample+char
-        #     else:
-        #         # Character skipped
-        #         skipNext = False
-
-        # # Assign resample to the output
-        # imageAscii = resample
 
     # Check if verbose status should be stated
     if VERBOSE:
@@ -175,8 +141,6 @@ def imageToAsciiImage(filepath, fontName):
     # Prepare the output image to be drawn on
     outputDraw = ImageDraw.Draw(outputImage)
 
-    # TODO: Consider looping through the items within the asciiString string and manually placing them indivigually
-
     # Build a wrapped text for the size
     textBundle = textwrap.wrap(asciiString, inputW, break_long_words=True, break_on_hyphens=True)
 
@@ -188,10 +152,10 @@ def imageToAsciiImage(filepath, fontName):
 
     # Loop through the lines
     cusorY = 0
-    count = 0
+    count = 1
     for line in textBundle:
         # Print the loading bar
-        print('Working ('+str(count)+'/'+str(len(textBundle))+')...')
+        print('Working ('+str(count)+'/'+str(len(textBundle))+')')
 
         # Get the font size
         (fW, fH) = font.getsize(line)

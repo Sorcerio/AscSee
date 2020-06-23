@@ -16,10 +16,6 @@ def main():
 
     # batchProcessImageToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'])
     processImageToAscii('testImage2.png', 'output')
-    # processImageToAscii('testImage3.jpg', 'output')
-    # processImageToAscii('testImage4.jpg', 'output')
-    # processImageToAscii('testImage5.jpg', 'output')
-    # processImageToAscii('testImage6.jpg', 'output')
 
 # Functions
 def processImageToAscii(filepath, outputName):
