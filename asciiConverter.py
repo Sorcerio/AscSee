@@ -2,7 +2,8 @@
 # Converts given image files into ASCII stylized images.
 
 # Imports
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont # pip install Pillow
+# import cv2 as cv # pip install opencv-python
 import time
 import math
 import textwrap
@@ -77,6 +78,15 @@ def imageToAsciiString(image, newWidth = 100, subsamble = 0, ):
     if subsamble > 0:
         imageAscii = imageAscii[0::subsamble]
 
+        # # Convert the string to a byte array
+        # iaBytes = bytearray(imageAscii, 'ascii')
+
+        # # Delete for subsampling
+        # del iaBytes[subsamble-1::subsamble]
+
+        # # Assign the subsampled string
+        # imageAscii = str(iaBytes)
+
     # Check if verbose status should be stated
     if VERBOSE:
         print('Image to ASCII conversion done.')
@@ -116,7 +126,7 @@ def mapPixelsToAscii(image):
     return ''.join(pixelChars)
 
 # Converts an image at the specified filepath to an ASCII image file
-def imageToAsciiImage(filepath, fontName):
+def imageToAsciiImage(filepath, fontName, subsample = 7):
     # Mark the start time
     exStartTime = time.time()
 
@@ -130,7 +140,7 @@ def imageToAsciiImage(filepath, fontName):
     (inputW, inputH) = inputImage.size
 
     # Convert the image to ASCII
-    asciiString = imageToAsciiString(inputImage, inputW, 7)
+    asciiString = imageToAsciiString(inputImage, inputW, subsample)
 
     # Print the build image response
     print('Building output image...')
@@ -142,6 +152,7 @@ def imageToAsciiImage(filepath, fontName):
     outputDraw = ImageDraw.Draw(outputImage)
 
     # Build a wrapped text for the size
+    # TODO: Manually build the string bundle
     textBundle = textwrap.wrap(asciiString, inputW, break_long_words=True, break_on_hyphens=True)
 
     # Calculate the font size
