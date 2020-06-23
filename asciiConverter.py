@@ -132,71 +132,69 @@ def imageToAsciiImage(filepath, fontName, fontSize):
     # Mark the start time
     exStartTime = time.time()
 
-    # # Try to get the input image
-    # try:
-
     # Try to get the input image
-    inputImage = Image.open(filepath)
+    try:
+        # Try to get the input image
+        inputImage = Image.open(filepath)
 
-    # Get the size of the input image
-    (inputW, inputH) = inputImage.size
+        # Get the size of the input image
+        (inputW, inputH) = inputImage.size
 
-    # Build the ascii image list
-    imageAsciiList = imageToAsciiList(inputImage) # TODO: Add subsample to this function (but call it warp)
+        # Build the ascii image list
+        imageAsciiList = imageToAsciiList(inputImage) # TODO: Add subsample to this function (but call it warp)
 
-    # Print the build image response
-    print('Building output image...')
+        # Print the build image response
+        print('Building output image...')
 
-    # Create an output image
-    outputImage = Image.new('RGB', (inputW, inputH), 'black') # TODO: Add color warping option for the background and text
+        # Create an output image
+        outputImage = Image.new('RGB', (inputW, inputH), 'black') # TODO: Add color warping option for the background and text
 
-    # Prepare the output image to be drawn on
-    outputDraw = ImageDraw.Draw(outputImage)
+        # Prepare the output image to be drawn on
+        outputDraw = ImageDraw.Draw(outputImage)
 
-    # Build the draw font
-    font = ImageFont.truetype(fontName, fontSize)
+        # Build the draw font
+        font = ImageFont.truetype(fontName, fontSize)
 
-    # Calculate the max amount of characters for width and height
-    maxCharW = int(inputW/fontSize)
-    maxCharH = int(inputH/fontSize)
+        # Calculate the max amount of characters for width and height
+        maxCharW = int(inputW/fontSize)
+        maxCharH = int(inputH/fontSize)
 
-    # Calculate the required step for the width and height to match output
-    widthStep = int(inputW/maxCharW) # for char
-    heightStep = int(inputH/maxCharH) # for line
+        # Calculate the required step for the width and height to match output
+        widthStep = int(inputW/maxCharW) # for char
+        heightStep = int(inputH/maxCharH) # for line
 
-    # Loop through the ascii list
-    cursorY = 0
-    for lineInd in range(0, len(imageAsciiList), widthStep):
-        # Get the line
-        line = imageAsciiList[lineInd]
+        # Loop through the ascii list
+        cursorY = 0
+        for lineInd in range(0, len(imageAsciiList), widthStep):
+            # Get the line
+            line = imageAsciiList[lineInd]
 
-        # Loop through the appropriate amount of characters for the row
-        cursorX = 0
-        for charInd in range(0, len(line), heightStep):
-            # Draw the character
-            outputDraw.text((cursorX, cursorY), line[charInd], 'white', font)
+            # Loop through the appropriate amount of characters for the row
+            cursorX = 0
+            for charInd in range(0, len(line), heightStep):
+                # Draw the character
+                outputDraw.text((cursorX, cursorY), line[charInd], 'white', font)
 
-            # Iterate x cursor
-            cursorX = cursorX+fontSize
+                # Iterate x cursor
+                cursorX = cursorX+fontSize
 
-        # Increase y cursor
-        cursorY = cursorY+fontSize
+            # Increase y cursor
+            cursorY = cursorY+fontSize
 
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the build image done response
-        print('Done building output image.')
+        # Check if verbose status should be stated
+        if VERBOSE:
+            # Print the build image done response
+            print('Done building output image.')
 
-        # Print the execution time
-        print('Image converted in: %.2f seconds' % (time.time()-exStartTime))
+            # Print the execution time
+            print('Image converted in: %.2f seconds' % (time.time()-exStartTime))
 
-    # Return the output image
-    return outputImage
-
-    # except Exception as err:
-    #     # Print the problem
-    #     print("Image at "+str(inputImage)+" could not opened.")
-    #     print(err)
+        # Return the output image
+        return outputImage
+    except Exception as err:
+        # Print the problem
+        print("Image at "+str(inputImage)+" could not opened.")
+        print(err)
 
 # Calculates and return the aspect ratio of the provided size values
 def calculateAspectRatio(width, height):
