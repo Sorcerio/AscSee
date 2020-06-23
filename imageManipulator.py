@@ -15,7 +15,7 @@ def main():
     ac.toggleVerbose()
 
     # Present the main menu
-    gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', mainMenu)
+    gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
 
     # # Start the clocker
     # gu.startClocker('img2ascii')
@@ -30,16 +30,28 @@ def main():
 
 # Functions
 # Handles the main menu inputs
-def mainMenu(choice):
-    if choice == 0:
+def menuMain(choice):
+    if choice == '0':
         # Convert Image
         pass
-    elif choice == 1:
+    elif choice == '1':
         # Convert Video
         pass
-    elif choice == 2:
+    elif choice == '2':
         # Settings Menu
-        pass
+        # Build the choices
+        choices = [
+            'Toggle Verbose Mode ('+('On' if ac.isVerboseOn else 'Off')+')',
+            'Set Font File',
+            'Set Font Size ('+str(FONT_SIZE)+'px)'
+        ]
+
+        # Open the settings menu
+        gu.textMenu('AscSee Settings', choices, 'Back', menuSettings)
+
+# Handles the settings menu inputs
+def menuSettings(choice):
+    print(choice)
 
 # Main Thread Execution
 if __name__=='__main__':
