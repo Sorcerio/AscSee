@@ -3,7 +3,8 @@
 
 ## Imports
 from PIL import Image, ImageDraw, ImageFont # pip install Pillow
-# import cv2 as cv # pip install opencv-python
+import cv2 as cv # pip install opencv-python
+import numpy as np
 import math
 import random
 
@@ -206,6 +207,55 @@ def calculateAspectRatio(width, height):
 
     # Return them in a tuple
     return (arW, arH)
+
+# Converts a provided video file into an ASCII image version.
+# NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 30fps with a length of
+# 1 minute can take (estimated on local hardware) around 10 hours.
+def videoToAsciiVideo(filepath, fontName, fontSize):
+    # Report the video file being loaded
+    print('Loading video file...')
+
+    # Capture the video file
+    vidCap = cv.VideoCapture(filepath)
+
+    # Report the video file loaded and frame processing start
+    print('Loaded video file.')
+    print('Processing video frames, this may take a while...')
+
+    # Get the frame count of the video
+    vidFrameCount = int(vidCap.get(cv.CAP_PROP_FRAME_COUNT))
+
+    # Enter the frame loop
+    moreFrames = True
+    frameCount = 0
+    while(moreFrames):
+        # Report the frame being processed
+        print('Processing frame '+str(frameCount)+'/'+str(vidFrameCount))
+
+        # Capture the current frame
+        moreFrames, imageCv = vidCap.read()
+
+        # Check if more frames are present
+        if moreFrames:
+            # Convert the CV image to a Pil image
+            imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
+
+            print(imagePil)
+        else:
+            # Exit the loop
+            break
+
+        # Iterate the count
+        frameCount += 1
+
+    # Release the video
+    vidCap.release()
+
+    # Make sure any CV windows are closed
+    cv.destroyAllWindows()
+
+    # Report the frames have been process
+    print('Video frames processed.')
 
 ## Deployment Functions
 # Processes a single filepath into an ASCII image rendered .png file
