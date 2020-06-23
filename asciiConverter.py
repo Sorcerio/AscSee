@@ -32,7 +32,7 @@ def example(filepath, newWidth = 100):
         # Send back nothing
         return None
 
-# Functions
+# Processing Functions
 # Toggles the verbose flop
 def toggleVerbose():
     # Scope the global
@@ -143,8 +143,10 @@ def imageToAsciiImage(filepath, fontName, fontSize):
         # Build the ascii image list
         imageAsciiList = imageToAsciiList(inputImage) # TODO: Add subsample to this function (but call it warp)
 
-        # Print the build image response
-        print('Building output image...')
+        # Check if verbose status should be stated
+        if VERBOSE:
+            # Print the build image response
+            print('Building output image...')
 
         # Create an output image
         outputImage = Image.new('RGB', (inputW, inputH), 'black') # TODO: Add color warping option for the background and text
