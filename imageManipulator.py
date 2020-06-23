@@ -41,9 +41,8 @@ def menuMain(choice):
         # Settings Menu
         # Build the choices
         choices = [
-            'Toggle Verbose Mode ('+('On' if ac.isVerboseOn else 'Off')+')',
             'Set Font File',
-            'Set Font Size ('+str(FONT_SIZE)+'px)'
+            'Set Font Size'
         ]
 
         # Open the settings menu
@@ -51,7 +50,35 @@ def menuMain(choice):
 
 # Handles the settings menu inputs
 def menuSettings(choice):
-    print(choice)
+    # Scope the globals
+    global FONT_FONT
+    global FONT_SIZE
+
+    # Handle choices
+    if choice == '0':
+        # Set the font file
+        # Ask for a new file path
+        answer = gu.managedInput('Enter the file path to the font file', 'Cancel')
+
+        # Check if an answer was provided
+        if answer != None:
+            # Change the value
+            FONT_FONT = answer
+
+            # Report the value changed
+            print('\nFont changed to '+str(FONT_FONT))
+    elif choice == '1':
+        # Set the font size
+        # Ask for a new font size
+        answer = gu.managedInputNumberRange('Enter a new font size', 10000, 1, 'Cancel')
+
+        # Check if an answer was provided
+        if answer != None:
+            # Change the value
+            FONT_SIZE = answer
+
+            # Report the value changed
+            print('\nFont Size changed to '+str(FONT_SIZE))
 
 # Main Thread Execution
 if __name__=='__main__':
