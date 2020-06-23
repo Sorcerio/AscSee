@@ -156,15 +156,23 @@ def imageToAsciiImage(filepath, fontName, fontSize):
     # Build the draw font
     font = ImageFont.truetype(fontName, fontSize)
 
+    # Calculate the max amount of characters for width and height
+    maxCharW = int(inputW/fontSize)
+    maxCharH = int(inputH/fontSize)
+
+    # Calculate the required step for the width and height to match output
+    widthStep = int(inputW/maxCharW) # for char
+    heightStep = int(inputH/maxCharH) # for line
+
     # Loop through the ascii list
     cursorY = 0
-    for lineInd in range(0, len(imageAsciiList), fontSize-1):
+    for lineInd in range(0, len(imageAsciiList), widthStep):
         # Get the line
         line = imageAsciiList[lineInd]
 
         # Loop through the appropriate amount of characters for the row
         cursorX = 0
-        for charInd in range(0, len(line), fontSize-1):
+        for charInd in range(0, len(line), heightStep):
             # Draw the character
             outputDraw.text((cursorX, cursorY), line[charInd], 'white', font)
 
