@@ -145,37 +145,40 @@ def imageToAsciiImage(filepath, fontName, subsample = 7):
     # Print the build image response
     print('Building output image...')
 
+    # FONT SIZE
+    fontSize = 16
+
     # Create an output image
-    outputImage = Image.new('RGB', (inputW, inputH), 'black')
+    outputImage = Image.new('RGB', (inputW*fontSize, inputH*fontSize), 'black')
 
     # Prepare the output image to be drawn on
     outputDraw = ImageDraw.Draw(outputImage)
 
-    # Build a wrapped text for the size
-    # TODO: Manually build the string bundle
-    textBundle = textwrap.wrap(asciiString, inputW, break_long_words=True, break_on_hyphens=True)
-
-    # Calculate the font size
-    fontSize = int(math.floor(inputW/len(textBundle)))
+    print(inputW/fontSize)
 
     # Build the draw font
     font = ImageFont.truetype(fontName, fontSize)
 
-    # Loop through the lines
-    cusorY = 0
+    # Loop through the ascii string
+    cursorX = 0
+    cursorY = 0
     count = 1
-    for line in textBundle:
+    for char in asciiString:
         # Print the loading bar
-        print('Working ('+str(count)+'/'+str(len(textBundle))+')')
-
-        # Get the font size
-        (fW, fH) = font.getsize(line)
+        print('Working (char '+str(count)+'/'+str(len(asciiString))+')')
 
         # Draw the text on the line
-        outputDraw.text(((inputW-fW)/2, cusorY), line, 'white', font)
+        outputDraw.text((cursorX, cursorY), char, 'white', font)
 
-        # Increase the cursor
-        cusorY = cusorY+fH
+        # Check if at the end of the row
+        # if cursorX >= inputW:
+        if cursorX >= inputW*fontSize:
+            # Move down a row
+            cursorX = 0
+            cursorY = cursorY+fontSize
+        else:
+            # Move to the next column
+            cursorX = cursorX+fontSize
 
         # Iterate the count
         count = count+1

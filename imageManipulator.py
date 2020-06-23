@@ -21,7 +21,7 @@ def main():
 def processImageToAscii(filepath, outputName):
     # Process the image to an ASCII image
     # outputImage = ac.imageToAsciiImage(filepath, FONT_FONT, FONT_SIZE)
-    outputImage = ac.imageToAsciiImage(filepath, FONT_FONT, FONT_SIZE)
+    outputImage = ac.imageToAsciiImage(filepath, FONT_FONT)
 
     # Save the image
     outputImage.save(str(outputName)+'.png')
