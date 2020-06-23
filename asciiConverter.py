@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont # pip install Pillow
 # import cv2 as cv # pip install opencv-python
 import time
 import math
-import textwrap
+import random
 
 # Variables
 USED_CHARS = ['#','?','%','.','S','+','.','*',':',',','@']
@@ -128,7 +128,7 @@ def mapPixelsToAscii(image):
     return ''.join(pixelChars)
 
 # Converts an image at the specified filepath to an ASCII image file
-def imageToAsciiImage(filepath, fontName, fontSize, warp = 0):
+def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white']):
     # Mark the start time
     exStartTime = time.time()
 
@@ -175,7 +175,7 @@ def imageToAsciiImage(filepath, fontName, fontSize, warp = 0):
             cursorX = 0
             for charInd in range(0, len(line), heightStep):
                 # Draw the character
-                outputDraw.text((cursorX, cursorY), line[charInd], 'white', font)
+                outputDraw.text((cursorX, cursorY), line[charInd], random.choice(textColors), font)
 
                 # Iterate x cursor
                 cursorX = cursorX+fontSize
