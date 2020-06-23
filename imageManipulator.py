@@ -14,18 +14,32 @@ def main():
     # Set the ASCII Converter to Verbose
     ac.toggleVerbose()
 
-    # Start the clocker
-    gu.startClocker('img2ascii')
+    # Present the main menu
+    gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', mainMenu)
 
-    # ac.processImageToAscii('testImage2.png', 'output', FONT_FONT, FONT_SIZE)
-    # ac.processBatchImagesToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'], FONT_FONT, FONT_SIZE)
+    # # Start the clocker
+    # gu.startClocker('img2ascii')
 
-    ac.videoToAsciiVideoFile('testVideo.mp4', 'output.mp4', FONT_FONT, FONT_SIZE)
+    # # ac.processImageToAscii('testImage2.png', 'output', FONT_FONT, FONT_SIZE)
+    # # ac.processBatchImagesToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'], FONT_FONT, FONT_SIZE)
 
-    # End the clocker
-    gu.endClocker('img2ascii')
+    # ac.videoToAsciiVideoFile('testVideo.mp4', 'output.mp4', FONT_FONT, FONT_SIZE)
+
+    # # End the clocker
+    # gu.endClocker('img2ascii')
 
 # Functions
+# Handles the main menu inputs
+def mainMenu(choice):
+    if choice == 0:
+        # Convert Image
+        pass
+    elif choice == 1:
+        # Convert Video
+        pass
+    elif choice == 2:
+        # Settings Menu
+        pass
 
 # Main Thread Execution
 if __name__=='__main__':

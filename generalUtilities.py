@@ -103,7 +103,7 @@ def presentTextMenu(title, choices):
         index += 1
 
     # Print instructions
-    print("Select a number to choose the option.")
+    print("Enter a number to choose the option.")
     
     # Ask user for choice and return
     return askUser("Choice", numberList, False)
@@ -307,7 +307,7 @@ def presentCheckboxMenu(title, choices):
         index += 1
 
     # Print instructions
-    print("Select a number to choose the option.")
+    print("Enter a number to choose the option.")
 
     # Ask user for choice
     answer = askUser("Choice", numberList, False)
