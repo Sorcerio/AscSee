@@ -133,68 +133,81 @@ def mapPixelsToAscii(image):
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
 # textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
 # backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imageToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+def imagePathToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
     # Try to get the input image
     try:
         # Try to get the input image
         inputImage = Image.open(filepath)
 
-        # Get the size of the input image
-        (inputW, inputH) = inputImage.size
-
-        # Build the ascii image list
-        imageAsciiList = imageToAsciiList(inputImage, warp)
-
-        # Check if verbose status should be stated
-        if VERBOSE:
-            # Print the build image response
-            print('Building output image...')
-
-        # Create an output image
-        outputImage = Image.new('RGB', (inputW, inputH), backgroundColor)
-
-        # Prepare the output image to be drawn on
-        outputDraw = ImageDraw.Draw(outputImage)
-
-        # Build the draw font
-        font = ImageFont.truetype(fontName, fontSize)
-
-        # Calculate the max amount of characters for width and height
-        maxCharW = int(inputW/fontSize)
-        maxCharH = int(inputH/fontSize)
-
-        # Calculate the required step for the width and height to match output
-        widthStep = int(inputW/maxCharW) # for char
-        heightStep = int(inputH/maxCharH) # for line
-
-        # Loop through the ascii list
-        cursorY = 0
-        for lineInd in range(0, len(imageAsciiList), widthStep):
-            # Get the line
-            line = imageAsciiList[lineInd]
-
-            # Loop through the appropriate amount of characters for the row
-            cursorX = 0
-            for charInd in range(0, len(line), heightStep):
-                # Draw the character
-                outputDraw.text((cursorX, cursorY), line[charInd], random.choice(textColors), font)
-
-                # Iterate x cursor
-                cursorX = cursorX+fontSize
-
-            # Increase y cursor
-            cursorY = cursorY+fontSize
-
-        # Check if verbose status should be stated
-        if VERBOSE:
-            # Print the build image done response
-            print('Done building output image.')
-
-        # Return the output image
-        return outputImage
+        # Convert and return the image
+        return imageToAsciiImage(inputImage, fontName, fontSize, warp, textColors, backgroundColor)
     except Exception as err:
         # Print the problem
         print("Image at "+str(inputImage)+" could not opened.")
+
+        # Return an error image
+        return Image.new('RGB', (100, 100), 'red')
+
+# Converts an image at the specified filepath to an ASCII image file
+# inputImage -> A PIL image object to convert to ASCII
+# fontName -> The path to a valid font file with extension. Only .ttf files supported.
+# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
+# textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
+# backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
+def imageToAsciiImage(inputImage, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+    # Get the size of the input image
+    (inputW, inputH) = inputImage.size
+
+    # Build the ascii image list
+    imageAsciiList = imageToAsciiList(inputImage, warp)
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the build image response
+        print('Building output image...')
+
+    # Create an output image
+    outputImage = Image.new('RGB', (inputW, inputH), backgroundColor)
+
+    # Prepare the output image to be drawn on
+    outputDraw = ImageDraw.Draw(outputImage)
+
+    # Build the draw font
+    font = ImageFont.truetype(fontName, fontSize)
+
+    # Calculate the max amount of characters for width and height
+    maxCharW = int(inputW/fontSize)
+    maxCharH = int(inputH/fontSize)
+
+    # Calculate the required step for the width and height to match output
+    widthStep = int(inputW/maxCharW) # for char
+    heightStep = int(inputH/maxCharH) # for line
+
+    # Loop through the ascii list
+    cursorY = 0
+    for lineInd in range(0, len(imageAsciiList), widthStep):
+        # Get the line
+        line = imageAsciiList[lineInd]
+
+        # Loop through the appropriate amount of characters for the row
+        cursorX = 0
+        for charInd in range(0, len(line), heightStep):
+            # Draw the character
+            outputDraw.text((cursorX, cursorY), line[charInd], random.choice(textColors), font)
+
+            # Iterate x cursor
+            cursorX = cursorX+fontSize
+
+        # Increase y cursor
+        cursorY = cursorY+fontSize
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the build image done response
+        print('Done building output image.')
+
+    # Return the output image
+    return outputImage
 
 # Calculates and return the aspect ratio of the provided size values
 def calculateAspectRatio(width, height):
@@ -240,7 +253,8 @@ def videoToAsciiVideo(filepath, fontName, fontSize):
             # Convert the CV image to a Pil image
             imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
-            print(imagePil)
+            # TODO: Convert this to an inline to build the new video file out of the modified frames
+            # TEMP: Process the image to a file
         else:
             # Exit the loop
             break
@@ -261,7 +275,7 @@ def videoToAsciiVideo(filepath, fontName, fontSize):
 # Processes a single filepath into an ASCII image rendered .png file
 def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
     # Process the image to an ASCII image
-    outputImage = imageToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
+    outputImage = imagePathToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
 
     # Save the image
     outputImage.save(str(outputName)+'.png')
