@@ -333,10 +333,16 @@ def writeFullFile(fileName, text):
         # Write the text out
         wFile.write(text)
 
-# Prints and retains a checkbox based menu system based on provided information leaving the calling program to decide function.
+# DEPRECIATED: Prints and retains a checkbox based menu system based on provided information leaving the calling program to decide function.
+# NOTE: It is recommend to use the pagedMultiSelect functions instead of this.
 # title -> The title of the menu
 # choices -> Dictionary of Choice Titles as keys and if the option is selected as Boolen for the value to be displayed by the menu
-def presentCheckboxMenu(title, choices):
+def presentCheckboxMenu(title, choices, silenceDepreciation = False):
+    # Check if depreciation silenced
+    if not silenceDepreciation:
+        # Print the depreciation message
+        print('presentCheckboxMenu(...) is depreciated. Check it\'s documentation for alternatives.')
+
     # Print title
     print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
 
@@ -384,12 +390,18 @@ def presentCheckboxMenu(title, choices):
     # Ask user for choice and return
     return answer, choices
 
-# Prints a check box menu and handles input between an accompanied execution function all within a handled loop.
+# DEPRECITATED: Prints a check box menu and handles input between an accompanied execution function all within a handled loop.
+# NOTE: It is recommend to use the pagedMultiSelect functions instead of this.
 # title -> The title of the menu
 # choices -> Dictionary of Choice Titles as keys and if the option is selected as Boolen for the value to be displayed by the menu
 # lastOption -> Option to add to the last of the choices. Often 'Back' or 'Quit'
 # func -> The function to call within the script that calls this function that uses the data gathered from this function
-def checkboxMenu(title, choices, lastOption, func):
+def checkboxMenu(title, choices, lastOption, func, silenceDepreciation = False):
+    # Check if depreciation silenced
+    if not silenceDepreciation:
+        # Print the depreciation message
+        print('checkboxMenu(...) is depreciated. Check it\'s documentation for alternatives.')
+
     # Prep answer choice
     answer = None
 
@@ -523,3 +535,11 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
     else:
         # Report the problem
         print('GeneralUtlities: No clocker exists for the key, \''+str(key)+'\'')
+
+# TODO: Write the description and arguments
+def presentPagedMultiSelect(title, choices, finishOption, perPage = 10, cancelOption = None):
+    # Prepare the selected answers list
+    answers = []
+
+    # Return the selected answers
+    return answers
