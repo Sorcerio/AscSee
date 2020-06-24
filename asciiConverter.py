@@ -9,11 +9,15 @@ import math
 import random
 
 ## Variables
-USED_CHARS = ['#','?','%','.','S','+','.','*',':',',','@']
 VERBOSE = False
+USED_CHARS = ['#','?','%','.','S','+','.','*',':',',','@']
+DEFAULT_NEW_WIDTH = 100
+DEFAULT_WARP = 0
+DEFAULT_TEXT_COLORS = ['white']
+DEFAULT_BACKGROUND_COLOR = 'black'
 
 ## Example Thread
-def example(filepath, newWidth = 100):
+def example(filepath, newWidth = DEFAULT_NEW_WIDTH):
     # Enter image conversion try/catch
     try:
         # Try to get the image
@@ -32,7 +36,7 @@ def example(filepath, newWidth = 100):
         # Send back nothing
         return None
 
-## Processing Functions
+## Management Functions
 # Toggles the verbose flop
 def toggleVerbose():
     # Scope the global
@@ -49,8 +53,25 @@ def toggleVerbose():
 def isVerboseOn():
     return VERBOSE
 
+# Get the default newWidth
+def getDefaultNewWidth():
+    return DEFAULT_NEW_WIDTH
+
+# Get the default warp
+def getDefaultWarp():
+    return DEFAULT_WARP
+
+# Get the default textColors
+def getDefaultTextColors():
+    return DEFAULT_TEXT_COLORS
+
+# Get the default BackgroundColor
+def getDefaultBackgroundColor():
+    return DEFAULT_BACKGROUND_COLOR
+
+## Processing Functions
 # Converts the provided 
-def imageToAsciiList(image, warp = 0):
+def imageToAsciiList(image, warp = DEFAULT_WARP):
     # Check if verbose status should be stated
     if VERBOSE:
         print('Converting image to ASCII...')
@@ -87,7 +108,7 @@ def imageToAsciiList(image, warp = 0):
 # subsample -> If not 0, starts with the first index in the final ASCII generation and creates a subsample of only
 #               the nth values. This is useful because when generating the ASCII, the image will have an equal number
 #               of characters as the image size in pixels. (default: 0, ie: subsample disabled)
-def imageToAsciiString(image, newWidth = 100, warp = 0):
+def imageToAsciiString(image, newWidth = DEFAULT_NEW_WIDTH, warp = DEFAULT_WARP):
     # Scale the image down to the decided width
     image = scaleImage(image, newWidth)
 
@@ -101,7 +122,7 @@ def imageToAsciiString(image, newWidth = 100, warp = 0):
     return imageAscii
 
 # Scales the image down to the desired width keeping the aspect ratio
-def scaleImage(image, newWidth = 100):
+def scaleImage(image, newWidth = DEFAULT_NEW_WIDTH):
     # Get the image's size
     (startWidth, startHeight) = image.size
 
@@ -138,7 +159,7 @@ def mapPixelsToAscii(image):
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
 # textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
 # backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imagePathToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+def imagePathToAsciiImage(filepath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
     # Try to get the input image
     try:
         # Try to get the input image
@@ -160,7 +181,7 @@ def imagePathToAsciiImage(filepath, fontName, fontSize, warp = 0, textColors = [
 # warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
 # textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
 # backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imageToAsciiImage(inputImage, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+def imageToAsciiImage(inputImage, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
     # Get the size of the input image
     (inputW, inputH) = inputImage.size
 
@@ -229,7 +250,7 @@ def calculateAspectRatio(width, height):
 
 ## Deployment Functions
 # Processes a single filepath into an ASCII image rendered .png file
-def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
     # Process the image to an ASCII image
     outputImage = imagePathToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
 
@@ -237,7 +258,7 @@ def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = 0, text
     outputImage.save(str(outputName)+'.png')
 
 # Processes a list of filepaths into ASCII image rendered .png files
-def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
     # Check if verbose status should be stated
     if VERBOSE:
         # Print the batch process start
@@ -267,7 +288,7 @@ def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = 0, textColor
 # outputPath -> The output path file to save the converted video to with .mp4 extension.
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
 # fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'):
+def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
     # Report the video file being loaded
     print('> Loading video file...')
 
