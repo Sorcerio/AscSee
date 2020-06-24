@@ -131,10 +131,40 @@ def managedInput(query, exitPhrase):
 # blacklist -> Inputs that would qualify as a bad input. Has a default value
 def managedInputForced(query, blacklist = [None, ""]):
     # Enter the input loop
-    answer = None
+    answer = blacklist[0]
     while(answer in blacklist):
         # Ask user for input
         answer = input(query+": ").strip()
+
+    # Return the answer
+    return answer
+
+# Asks for user input while waiting for a response found within the whitelist
+# query -> Question to ask the user for input on. Has ": " appended to it
+# whitelist -> Inputs that would qualify as valid inputs
+# normalize -> If set to true, the function will force all strings to be lowercase
+#   and extra whitespace will be trimmed
+def managedInputForcedWhitelist(query, whitelist, normalize = False):
+    # Check if normalizing
+    if normalize:
+        # Loop through the whitelist
+        for i in range(len(whitelist)):
+            # Get the item
+            item = whitelist[i]
+
+            # Check if the item is a string
+            if isinstance(item, str):
+                whitelist[i] = item.strip().lower()
+
+    # Enter the input loop
+    answer = None
+    while(answer not in whitelist):
+        # Ask user for input
+        answer = input(query+": ").strip()
+
+        # Check if normalizing
+        if normalize:
+            answer = answer.lower()
 
     # Return the answer
     return answer
@@ -173,6 +203,33 @@ def managedInputNumber(query, exitPhrase):
         return answer
     else:
         return None
+
+# Asks for user input while waiting for some form of none empty input that can be converted to an int to be entered
+# query -> Question to ask the user for input on. Has ": " appended to it
+# blacklist -> Inputs that would qualify as a bad input. Has a default value
+def managedInputNumberForced(query, blacklist = [None, '']):
+    # Enter the input loop
+    answer = blacklist[0]
+    while answer in blacklist:
+        # Ask user for input
+        answer = input(query+": ").strip()
+
+        # Attempt to convert to int
+        try:
+            # Convert to number
+            answer = int(answer)
+
+            # If success, break out
+            break
+        except ValueError:
+            # Tell user to fix it
+            print("'"+str(answer)+"' is not a number.")
+
+            # Reset the answer
+            answer = blacklist[0]
+
+    # Return the valid number
+    return answer
 
 # Asks for user input of a number while watching for an exit phrase that if entered.
 # Returns a 'None' object if canceled.
