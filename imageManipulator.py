@@ -8,6 +8,7 @@ import generalUtilities as gu
 # Variables
 FONT_FONT = 'arial.ttf' # Only in .ttf
 FONT_SIZE = 16 # Lowering font size will increase the visual resolution of the image, but increase the render time of each
+COLORS_WEB = ['AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure', 'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue', 'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse', 'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson', 'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray', 'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen', 'DarkOrange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen', 'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet', 'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue', 'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro', 'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey', 'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed ', 'Indigo  ', 'Ivory', 'Khaki', 'Lavender', 'LavenderBlush', 'LawnGreen', 'LemonChiffon', 'LightBlue', 'LightCoral', 'LightCyan', 'LightGoldenRodYellow', 'LightGray', 'LightGrey', 'LightGreen', 'LightPink', 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSlateGray', 'LightSlateGrey', 'LightSteelBlue', 'LightYellow', 'Lime', 'LimeGreen', 'Linen', 'Magenta', 'Maroon', 'MediumAquaMarine', 'MediumBlue', 'MediumOrchid', 'MediumPurple', 'MediumSeaGreen', 'MediumSlateBlue', 'MediumSpringGreen', 'MediumTurquoise', 'MediumVioletRed', 'MidnightBlue', 'MintCream', 'MistyRose', 'Moccasin', 'NavajoWhite', 'Navy', 'OldLace', 'Olive', 'OliveDrab', 'Orange', 'OrangeRed', 'Orchid', 'PaleGoldenRod', 'PaleGreen', 'PaleTurquoise', 'PaleVioletRed', 'PapayaWhip', 'PeachPuff', 'Peru', 'Pink', 'Plum', 'PowderBlue', 'Purple', 'RebeccaPurple', 'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Salmon', 'SandyBrown', 'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue', 'SlateGray', 'SlateGrey', 'Snow', 'SpringGreen', 'SteelBlue', 'Tan', 'Teal', 'Thistle', 'Tomato', 'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen']
 
 # Main Thread
 def main():
@@ -33,7 +34,7 @@ def main():
 def menuMain(choice):
     if choice == '0':
         # Convert Image
-        pass
+        choiceConvertImage()
     elif choice == '1':
         # Convert Video
         pass
@@ -85,6 +86,32 @@ def menuSettings(choice):
 
             # Report the value changed
             print('\nFont Size changed to '+str(FONT_SIZE))
+
+# Triggers the Convert Image logic
+def choiceConvertImage():
+    # filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'
+    # Get the filepath
+    filepath = gu.managedInputForced('Enter the filepath of the Image')
+
+    # Get the output name
+    outputName = gu.managedInputForced('Enter the name for the output file (without extension)')
+
+    # Ask if advanced options are needed
+    warp = 0
+    textColors = ['white']
+    backgroundColor = 'black'
+    if gu.askUserYesNo('Modify advanced options?', True):
+        # Advanced options
+        pass
+
+    # Start the clocker
+    gu.startClocker('img2ascii')
+
+    # Process the image
+    ac.processImageToAscii(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
+
+    # End the clocker
+    gu.endClocker('img2ascii')
 
 # Main Thread Execution
 if __name__=='__main__':
