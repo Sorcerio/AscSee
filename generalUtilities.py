@@ -141,36 +141,6 @@ def managedInputForced(query, blacklist = [None, ""]):
     # Return the answer
     return answer
 
-# Asks for user input while waiting for a response found within the whitelist
-# query -> Question to ask the user for input on. Has ": " appended to it
-# whitelist -> Inputs that would qualify as valid inputs
-# normalize -> If set to true, the function will force all strings to be lowercase
-#   and extra whitespace will be trimmed
-def managedInputForcedWhitelist(query, whitelist, normalize = False):
-    # Check if normalizing
-    if normalize:
-        # Loop through the whitelist
-        for i in range(len(whitelist)):
-            # Get the item
-            item = whitelist[i]
-
-            # Check if the item is a string
-            if isinstance(item, str):
-                whitelist[i] = item.strip().lower()
-
-    # Enter the input loop
-    answer = None
-    while(answer not in whitelist):
-        # Ask user for input
-        answer = input(query+": ").strip()
-
-        # Check if normalizing
-        if normalize:
-            answer = answer.lower()
-
-    # Return the answer
-    return answer
-
 # Asks for user input of a number while watching for an exit phrase that if entered.
 # Returns a 'None' object if canceled.
 # query -> Question to ask the user for input on. Has ": " appended to it
@@ -539,7 +509,7 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
         print('GeneralUtlities: No clocker exists for the key, \''+str(key)+'\'')
 
 # TODO: Write the description and arguments
-def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOption = None, nextOptions = 'Next Page', prevOption = 'Prev Page'):
+def presentPagedMultiSelect(title, choices, confirmOption, perPage = 5, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
     # Prepare the selected answers list
     answers = []
 
@@ -554,10 +524,29 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOp
         print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
         print('Page '+str(curPage+1)+' of '+str(len(choices)))
 
-        # TODO: Add functional options
+        # Copy the current page choices
+        curChoices = choices[curPage].copy()
+
+        # Check if not on the first page
+        if curPage > 0:
+            # Add the previous page option
+            curChoices.append(':'+str(prevOption))
+
+        # Check if not on the last page
+        if curPage < (len(choices)-1):
+            # Add the next page option
+            curChoices.append(':'+str(nextOption))
+
+        # Add the confirm option
+        curChoices.append(':'+str(confirmOption))
+
+        # Check if a cancel option was provided
+        if cancelOption != None and cancelOption.strip() != '':
+            # Add the cancel option
+            curChoices.append(':'+str(cancelOption))
 
         # Present a text menu with the current options
-        choice = presentTextMenu(None, choices[curPage])
+        choice = int(presentTextMenu(None, curChoices))
 
         print(choice)
 

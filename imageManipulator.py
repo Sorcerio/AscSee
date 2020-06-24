@@ -122,7 +122,7 @@ def askForAdvancedSettings():
     # Get a background color
     print('\nDefault background color is '+str(ac.getDefaultBackgroundColor())+'.')
     print('A list of webcolors can be found here: https://www.w3schools.com/colors/colors_names.asp')
-    backgroundColor = gu.managedInputForcedWhitelist('Enter a Web Color as background color', COLORS_WEB, True)
+    backgroundColor = gu.askUser('Enter a Web Color as background color', COLORS_WEB,False)
 
     # Send back the result
     return (warp, backgroundColor)
