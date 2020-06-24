@@ -83,11 +83,13 @@ def askUserYesNo(query, boolean = False):
         return askUser(query, ["Yes","No"])
 
 # Prints and retains a menu system based on provided information leaving the calling program to decide function.
-# title -> The title of the menu
+# title -> The title of the menu. Can also be supplied 'None' to have no title printed
 # choices -> List of choice titles for the menu
 def presentTextMenu(title, choices):
-    # Print title
-    print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
+    # Check if title should be printed
+    if title != None and title.strip() != '':
+        # Print title
+        print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
 
     # Print Menu
     index = 0
@@ -537,9 +539,33 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
         print('GeneralUtlities: No clocker exists for the key, \''+str(key)+'\'')
 
 # TODO: Write the description and arguments
-def presentPagedMultiSelect(title, choices, finishOption, perPage = 10, cancelOption = None):
+def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOption = None, nextOptions = 'Next Page', prevOption = 'Prev Page'):
     # Prepare the selected answers list
     answers = []
+
+    # Split the choices into paged clumps
+    choices = [choices[i*perPage:(i+1)*perPage] for i in range((len(choices)+perPage-1)//perPage)]
+
+    # Enter the input loop
+    finished = False
+    curPage = 0
+    while not finished:
+        # Print the title
+        print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
+        print('Page '+str(curPage+1)+' of '+str(len(choices)))
+
+        # TODO: Add functional options
+
+        # Present a text menu with the current options
+        choice = presentTextMenu(None, choices[curPage])
+
+        print(choice)
+
+        # TODO: Confirm option
+        # TODO: Cancel Option
+        # TODO: Next page option
+        # TODO: Prev page option
+        # TODO: else: Add to the answers list
 
     # Return the selected answers
     return answers
