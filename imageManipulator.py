@@ -107,23 +107,30 @@ def choiceConvertImage():
     backgroundColor = 'black'
     if gu.askUserYesNo('Modify advanced options?', True):
         # Advanced options
-        # Get a warp
-        print('\nDefault warp is '+str(DEFAULT_WARP)+'.')
-        warp = gu.managedInputNumberForced('Enter a warp value')
-
-        # Get a background color
-        print('\nDefault background color is '+str(DEFAULT_BACKGROUND_COLOR)+'.')
-        print('A list of webcolors can be found here: https://www.w3schools.com/colors/colors_names.asp')
-        backgroundColor = gu.managedInputForcedWhitelist('Enter a Web Color as background color', COLORS_WEB, True)
+        (warp, backgroundColor) = askForAdvancedSettings()
 
     # Start the clocker
-    gu.startClocker('img2ascii')
+    gu.startClocker('img2ascii', '\nStarted clocking...')
 
     # Process the image
     ac.processImageToAscii(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
 
     # End the clocker
     gu.endClocker('img2ascii')
+
+# Asks the user for advanced settings
+def askForAdvancedSettings():
+    # Get a warp
+    print('\nDefault warp is '+str(DEFAULT_WARP)+'.')
+    warp = gu.managedInputNumberForced('Enter a warp value')
+
+    # Get a background color
+    print('\nDefault background color is '+str(DEFAULT_BACKGROUND_COLOR)+'.')
+    print('A list of webcolors can be found here: https://www.w3schools.com/colors/colors_names.asp')
+    backgroundColor = gu.managedInputForcedWhitelist('Enter a Web Color as background color', COLORS_WEB, True)
+
+    # Send back the result
+    return (warp, backgroundColor)
 
 # Main Thread Execution
 if __name__=='__main__':
