@@ -307,7 +307,7 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
 
     # Open the video writer
     vidWritterFourCC = cv.VideoWriter_fourcc(*'MP4V') # MP4V, X264
-    vidWritter = cv.VideoWriter(outputPath, vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
+    vidWritter = cv.VideoWriter(outputPath+'.mp4', vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
 
     # Enter the frame loop
     moreFrames = True

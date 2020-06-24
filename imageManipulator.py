@@ -18,26 +18,15 @@ def main():
     # Present the main menu
     gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
 
-    # # Start the clocker
-    # gu.startClocker('img2ascii')
-
-    # # ac.processImageToAscii('testImage2.png', 'output', FONT_FONT, FONT_SIZE)
-    # # ac.processBatchImagesToAscii(['testImage.jpg', 'testImage2.png', 'testImage3.jpg', 'testImage4.jpg', 'testImage5.jpg', 'testImage6.jpg'], FONT_FONT, FONT_SIZE)
-
-    # ac.videoToAsciiVideoFile('testVideo.mp4', 'output.mp4', FONT_FONT, FONT_SIZE)
-
-    # # End the clocker
-    # gu.endClocker('img2ascii')
-
 # Functions
 # Handles the main menu inputs
 def menuMain(choice):
     if choice == '0':
         # Convert Image
-        choiceConvertImage()
+        choiceConvertItem('image')
     elif choice == '1':
         # Convert Video
-        pass
+        choiceConvertItem('video')
     elif choice == '2':
         # Settings Menu
         # Build the choices
@@ -88,10 +77,9 @@ def menuSettings(choice):
             print('\nFont Size changed to '+str(FONT_SIZE))
 
 # Triggers the Convert Image logic
-def choiceConvertImage():
-    # filepath, outputName, fontFile, fontSize, warp = 0, textColors = ['white'], backgroundColor = 'black'
+def choiceConvertItem(targetType):
     # Get the filepath
-    filepath = gu.managedInputForced('Enter the filepath of the Image')
+    filepath = gu.managedInputForced('Enter the filepath of the source '+targetType)
 
     # Get the output name
     outputName = gu.managedInputForced('Enter the name for the output file (without extension)')
@@ -107,8 +95,16 @@ def choiceConvertImage():
     # Start the clocker
     gu.startClocker('img2ascii', '\nStarted clocking...')
 
-    # Process the image
-    ac.processImageToAscii(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
+    # Decide which function to run
+    if targetType == 'image':
+        # Process the image
+        ac.processImageToAscii(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
+    elif targetType == 'video':
+        # Process the video
+        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
+    else:
+        # Report a problem
+        print(str(targetType)+' is not a valid conversion target type.')
 
     # End the clocker
     gu.endClocker('img2ascii')
