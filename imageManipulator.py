@@ -8,7 +8,6 @@ import generalUtilities as gu
 # Variables
 FONT_FONT = 'arial.ttf' # Only in .ttf
 FONT_SIZE = 16 # Lowering font size will increase the visual resolution of the image, but increase the render time of each
-COLORS_WEB = ['AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure', 'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue', 'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse', 'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson', 'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray', 'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen', 'DarkOrange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen', 'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet', 'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue', 'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro', 'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey', 'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed ', 'Indigo', 'Ivory', 'Khaki', 'Lavender', 'LavenderBlush', 'LawnGreen', 'LemonChiffon', 'LightBlue', 'LightCoral', 'LightCyan', 'LightGoldenRodYellow', 'LightGray', 'LightGrey', 'LightGreen', 'LightPink', 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSlateGray', 'LightSlateGrey', 'LightSteelBlue', 'LightYellow', 'Lime', 'LimeGreen', 'Linen', 'Magenta', 'Maroon', 'MediumAquaMarine', 'MediumBlue', 'MediumOrchid', 'MediumPurple', 'MediumSeaGreen', 'MediumSlateBlue', 'MediumSpringGreen', 'MediumTurquoise', 'MediumVioletRed', 'MidnightBlue', 'MintCream', 'MistyRose', 'Moccasin', 'NavajoWhite', 'Navy', 'OldLace', 'Olive', 'OliveDrab', 'Orange', 'OrangeRed', 'Orchid', 'PaleGoldenRod', 'PaleGreen', 'PaleTurquoise', 'PaleVioletRed', 'PapayaWhip', 'PeachPuff', 'Peru', 'Pink', 'Plum', 'PowderBlue', 'Purple', 'RebeccaPurple', 'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Salmon', 'SandyBrown', 'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue', 'SlateGray', 'SlateGrey', 'Snow', 'SpringGreen', 'SteelBlue', 'Tan', 'Teal', 'Thistle', 'Tomato', 'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen']
 
 # Main Thread
 def main():
@@ -90,6 +89,9 @@ def choiceConvertItem(targetType):
 
 # Asks the user for advanced settings
 def askForAdvancedSettings():
+    # Get the colors
+    webColors = ac.getColors()
+
     # Get a warp
     print('\nDefault warp is '+str(ac.getDefaultWarp())+'.')
     warp = gu.managedInputNumberForced('Enter a warp value')
@@ -100,11 +102,11 @@ def askForAdvancedSettings():
 
     # Get the text colors
     print('\nDefault text colors: '+', '.join(ac.getDefaultTextColors()))
-    textColors = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Confirm')
+    textColors = gu.presentPagedMultiSelect(None, webColors, 'Confirm')
 
     # Get a background color
     print('\nDefault background color is '+str(ac.getDefaultBackgroundColor())+'.')
-    backgroundColor = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Confirm', maxSelect=1)[0]
+    backgroundColor = gu.presentPagedMultiSelect(None, webColors, 'Confirm', maxSelect=1)[0]
 
     # Send back the result
     return (warp, fontSize, textColors, backgroundColor)
