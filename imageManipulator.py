@@ -15,11 +15,8 @@ def main():
     # Set the ASCII Converter to Verbose
     ac.toggleVerbose()
 
-    out = gu.presentPagedMultiSelect('Color Selection', COLORS_WEB, 'Confirm', maxSelect=3)
-    print(out)
-
-    # # Present the main menu
-    # gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
+    # Present the main menu
+    gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
 
 # Functions
 # Handles the main menu inputs

@@ -511,7 +511,7 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
 # Allows the user to select multiple options from a provided list of choices that are displayed in a pageinated
 #   fashion for easy reading. Returns a list of the selected answers, or None if a cancelOption was provided and
 #   the user chooses it.
-# title -> The title to display on the menu
+# title -> The title of the menu. Can also be supplied 'None' to have no title printed
 # choices -> A list of the possible choices. Ensure your choices do not have the same String as any of your
 #   values for the various options!
 # confirmOption -> The text shown for the option that confirms the current selection
@@ -553,8 +553,12 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
             # Show the at least select amount text
             selectStatus = ('Select at least '+str(minSelect))
 
-        # Print the title
-        print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
+        # Check if title should be printed
+        if title != None and title.strip() != '':
+            # Print the title
+            print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
+
+        # Print the page and selection information
         print('Page '+str(curPage+1)+' of '+str(len(choices)))
         print(selectStatus+': '+(', '.join(answers) if len(answers) > 0 else 'None'))
 
