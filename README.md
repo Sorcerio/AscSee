@@ -1,6 +1,5 @@
 # AscSee Multi-Media Filter
-![Comparison of Font Sizes on the Output Render](./DemoImages/FontSizeComparison.jpg)
-Larger Images: [Base Image](./DemoImages/imageBase.png), [16px Image](./DemoImages/image16.png), [8px Image](./DemoImages/image8.png), [1px Image](./DemoImages/image1.png)
+![AscSee Social Image](./DemoImages/social.jpg)
 
 AscSee allows for the conversion of standard multi-media to ASCII styled images in both image and video outputs using Python.
 The package comes with both the methods to do so, in `asciiConverter.py`, and a command line interface powered by my [General Utilities Library](https://github.com/maximombro/Python-General-Utilities) for ease of use found in `imageManipulator.py`.
@@ -9,6 +8,10 @@ The package comes with both the methods to do so, in `asciiConverter.py`, and a 
 ## Images
 See the banner above for examples of single image output.
 Render time for indivigual images is dependent on input file size, but otherwise generally takes between 2 seconds (for web images) and 3 minutes (for images taken directly from a DSLR).
+
+### Image Examples
+![Comparison of Font Sizes on the Output Render](./DemoImages/FontSizeComparison.jpg)
+Larger Images: [Base Image](./DemoImages/imageBase.png), [16px Image](./DemoImages/image16.png), [8px Image](./DemoImages/image8.png), [1px Image](./DemoImages/image1.png)
 
 ## Videos
 Rendering ASCII styled videos is entirely possible within AscSee.
