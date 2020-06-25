@@ -644,7 +644,7 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
     # Return the selected answers
     return answers
 
-# Presents the user with a search bar
+# Presents the user with a search bar. Returns the answer as it is found in options
 # options -> The options to search within
 def presentSearchInput(options):
     # Enter the action loop
