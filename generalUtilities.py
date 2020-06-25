@@ -516,10 +516,19 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
 #   values for the various options!
 # confirmOption -> The text shown for the option that confirms the current selection
 # perPage -> Indicates how many items shown per page
+# minSelect -> The minimum number of items that need to be selected for a valid return
+# maxSelect -> The maximum number of items that can be selected for a valid return. Supply -1 if there should be no limit
 # cancelOption -> The text shown for the option that cancels input. If None is provided, no cancel option is shown
 # nextOption -> The text shown for the option that allows movement to the next page
 # prevOption -> The text shown for the option that allows movement to the previous page
-def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
+def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelect = 1, maxSelect = -1, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
+    # Bound the select boundries
+    if minSelect <= 0:
+        minSelect = 1
+
+    if maxSelect < minSelect:
+        maxSelect = minSelect
+
     # Prepare the selected answers list
     answers = []
 
@@ -530,10 +539,24 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOp
     finished = False
     curPage = 0
     while not finished:
+        # Check if what type of status needs to be printed
+        selectStatus = ''
+        if len(answers) >= minSelect:
+            # Check if a max is set
+            if maxSelect != -1:
+                # Show the current out of max
+                selectStatus = ('Selected '+str(len(answers))+'/'+str(maxSelect))
+            else:
+                # Show the current selected
+                selectStatus = ('Selected '+str(len(answers)))
+        elif minSelect != 0:
+            # Show the at least select amount text
+            selectStatus = ('Select at least '+str(minSelect))
+
         # Print the title
         print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
         print('Page '+str(curPage+1)+' of '+str(len(choices)))
-        print('Selected: '+(', '.join(answers) if len(answers) > 0 else 'None'))
+        print(selectStatus+': '+(', '.join(answers) if len(answers) > 0 else 'None'))
 
         # Copy the current page choices
         curChoices = choices[curPage].copy()
@@ -564,9 +587,14 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOp
 
         # Decide what to do with the choice
         if choice == (':'+str(confirmOption)):
-            # Mark as finished
-            finished = True
-            break
+            # Check if the minimum amount of items has been selected
+            if len(answers) > minSelect:
+                # Mark as finished
+                finished = True
+                break
+            else:
+                # Tell the user they need to select more
+                print('\n'+str(minSelect)+' item'+('s' if minSelect != 1 else '')+' must be selected.\n')
         elif choice == (':'+str(cancelOption)):
             # Set the answers to None
             answers = None
@@ -586,8 +614,13 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOp
                 # Remove the choice from answers
                 answers.remove(choice)
             else:
-                # Add the selected to the answers list
-                answers.append(choice)
+                # Check if above the max items
+                if maxSelect != -1 and len(answers) >= maxSelect:
+                    # Report the issue
+                    print('\nOnly '+str(maxSelect)+' items can be selected!\n')
+                else:
+                    # Add the selected to the answers list
+                    answers.append(choice)
 
     # Return the selected answers
     return answers
