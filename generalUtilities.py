@@ -233,6 +233,26 @@ def managedInputNumberRange(query, maxNumber, minNumber, exitPhrase):
     else:
         return None
 
+# Asks for user input of a number while watching for an exit phrase that if entered.
+#   Returns the number the user entered.
+# query -> Question to ask the user for input on. Has ": " appended to it
+# maxNumber -> The maximum number that would be considered valid (inclusive)
+# minNumber -> The minimum number that would be considered valid (inclusive)
+# blacklist -> Inputs that would qualify as a bad input. Has a default value
+def managedInputNumberRangeForced(query, maxNumber, minNumber, blacklist = [None, '']):
+    # Enter validation loop
+    answer = blacklist[0]
+    while answer in blacklist:
+        # Get the forced number input
+        answer = managedInputNumberForced(query, blacklist)
+
+        # Check if the number is outside bounds
+        if answer > maxNumber or answer < minNumber:
+            answer = blacklist[0]
+
+    # Return the answer
+    return answer
+
 # Prints a text menu and handles input between an accompanied execution function all within a handled loop.
 # title -> The title of the menu
 # choices -> List of choice titles for the menu

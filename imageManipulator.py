@@ -29,14 +29,7 @@ def menuMain(choice):
         choiceConvertItem('video')
     elif choice == '2':
         # Settings Menu
-        # Build the choices
-        choices = [
-            'Set Font File',
-            'Set Font Size'
-        ]
-
-        # Open the settings menu
-        gu.textMenu('AscSee Settings', choices, 'Back', menuSettings)
+        gu.textMenu('AscSee Settings', ['Set Font File'], 'Back', menuSettings)
 
 # Handles the settings menu inputs
 def menuSettings(choice):
@@ -60,21 +53,6 @@ def menuSettings(choice):
 
             # Report the value changed
             print('\nFont changed to '+str(FONT_FONT))
-    elif choice == '1':
-        # Set the font size
-        # Print the current size
-        print('\nCurrent font size is: '+str(FONT_SIZE)+'px.')
-
-        # Ask for a new font size
-        answer = gu.managedInputNumberRange('Enter a new font size', 10000, 1, 'Cancel')
-
-        # Check if an answer was provided
-        if answer != None:
-            # Change the value
-            FONT_SIZE = answer
-
-            # Report the value changed
-            print('\nFont Size changed to '+str(FONT_SIZE))
 
 # Triggers the Convert Image logic
 def choiceConvertItem(targetType):
@@ -86,11 +64,12 @@ def choiceConvertItem(targetType):
 
     # Ask if advanced options are needed
     warp = ac.getDefaultWarp()
+    fontSize = FONT_SIZE
     textColors = ac.getDefaultTextColors()
     backgroundColor = ac.getDefaultBackgroundColor()
     if gu.askUserYesNo('Modify advanced options?', True):
         # Advanced options
-        (warp, textColors, backgroundColor) = askForAdvancedSettings()
+        (warp, fontSize, textColors, backgroundColor) = askForAdvancedSettings()
 
     # Start the clocker
     gu.startClocker('img2ascii', '\nStarted clocking...')
@@ -98,10 +77,10 @@ def choiceConvertItem(targetType):
     # Decide which function to run
     if targetType == 'image':
         # Process the image
-        ac.processImageToAscii(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
+        ac.processImageToAscii(filepath, outputName, FONT_FONT, fontSize, warp, textColors, backgroundColor)
     elif targetType == 'video':
         # Process the video
-        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, FONT_SIZE, warp, textColors, backgroundColor)
+        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, fontSize, warp, textColors, backgroundColor)
     else:
         # Report a problem
         print(str(targetType)+' is not a valid conversion target type.')
@@ -115,6 +94,10 @@ def askForAdvancedSettings():
     print('\nDefault warp is '+str(ac.getDefaultWarp())+'.')
     warp = gu.managedInputNumberForced('Enter a warp value')
 
+    # Get a font size
+    print('\nDefault font size is '+str(FONT_SIZE)+'.')
+    fontSize = gu.managedInputNumberRangeForced('Enter a new font size', 10000, 1)
+
     # Get the text colors
     print('\nDefault text colors: '+', '.join(ac.getDefaultTextColors()))
     textColors = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Confirm')
@@ -124,7 +107,7 @@ def askForAdvancedSettings():
     backgroundColor = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Confirm', maxSelect=1)[0]
 
     # Send back the result
-    return (warp, textColors, backgroundColor)
+    return (warp, fontSize, textColors, backgroundColor)
 
 # Main Thread Execution
 if __name__=='__main__':
