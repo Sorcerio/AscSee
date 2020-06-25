@@ -538,7 +538,7 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
     answers = []
 
     # Split the choices into paged clumps
-    choices = [choices[i*perPage:(i+1)*perPage] for i in range((len(choices)+perPage-1)//perPage)]
+    choicesPaged = [choices[i*perPage:(i+1)*perPage] for i in range((len(choices)+perPage-1)//perPage)]
 
     # Enter the input loop
     finished = False
@@ -564,14 +564,14 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
             print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
 
         # Print the page and selection information
-        print('Page '+str(curPage+1)+' of '+str(len(choices)))
+        print('Page '+str(curPage+1)+' of '+str(len(choicesPaged)))
         print(selectStatus+': '+(', '.join(answers) if len(answers) > 0 else 'None'))
 
         # Copy the current page choices
-        curChoices = choices[curPage].copy()
+        curChoices = choicesPaged[curPage].copy()
 
         # Check if not on the last page
-        if curPage < (len(choices)-1):
+        if curPage < (len(choicesPaged)-1):
             # Add the next page option
             curChoices.append(':'+str(nextOption))
 
@@ -599,6 +599,11 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
         # Get the actual choice text from the option
         choice = curChoices[choice]
 
+        # Check if the user is allowed to search and they've chosen to
+        if allowSearch and choice == searchOption:
+            # Allow the user to search and change the current choice
+            choice = presentSearchInput(choices)
+
         # Decide what to do with the choice
         if choice == (':'+str(confirmOption)):
             # Check if the minimum amount of items has been selected
@@ -622,16 +627,12 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
         elif choice == (':'+str(prevOption)):
             # Iterate to the previous page
             curPage -= 1
-        elif allowSearch and choice == searchOption:
-            # TODO: Allow the user to search
-            pass
         else:
             # Check if choice is in answers
             if choice in answers:
                 # Remove the choice from answers
                 answers.remove(choice)
             else:
-                print(maxSelect)
                 # Check if above the max items
                 if maxSelect != -1 and len(answers) >= maxSelect:
                     # Report the issue
