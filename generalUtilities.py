@@ -538,15 +538,15 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOp
         # Copy the current page choices
         curChoices = choices[curPage].copy()
 
-        # Check if not on the first page
-        if curPage > 0:
-            # Add the previous page option
-            curChoices.append(':'+str(prevOption))
-
         # Check if not on the last page
         if curPage < (len(choices)-1):
             # Add the next page option
             curChoices.append(':'+str(nextOption))
+
+        # Check if not on the first page
+        if curPage > 0:
+            # Add the previous page option
+            curChoices.append(':'+str(prevOption))
 
         # Add the confirm option
         curChoices.append(':'+str(confirmOption))
