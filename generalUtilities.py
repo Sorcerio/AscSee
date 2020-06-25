@@ -521,13 +521,18 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
 # cancelOption -> The text shown for the option that cancels input. If None is provided, no cancel option is shown
 # nextOption -> The text shown for the option that allows movement to the next page
 # prevOption -> The text shown for the option that allows movement to the previous page
-def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelect = 1, maxSelect = -1, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
+# allowSearch -> If the user is allowed to used the search action. Search is generally not needed for very short choice lists,
+#   but is extremely helpful for long ones
+def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelect = 1, maxSelect = -1, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page', allowSearch = True):
     # Bound the select boundries
     if minSelect <= 0:
         minSelect = 1
 
     if maxSelect != -1 and maxSelect < minSelect:
         maxSelect = minSelect
+
+    # Establish the search option
+    searchOption = ':Search'
 
     # Prepare the selected answers list
     answers = []
@@ -575,6 +580,11 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
             # Add the previous page option
             curChoices.append(':'+str(prevOption))
 
+        # Check if search is enabled
+        if allowSearch:
+            # Add the search option
+            curChoices.append(searchOption)
+
         # Add the confirm option
         curChoices.append(':'+str(confirmOption))
 
@@ -612,6 +622,9 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
         elif choice == (':'+str(prevOption)):
             # Iterate to the previous page
             curPage -= 1
+        elif allowSearch and choice == searchOption:
+            # TODO: Allow the user to search
+            pass
         else:
             # Check if choice is in answers
             if choice in answers:
@@ -629,3 +642,30 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
 
     # Return the selected answers
     return answers
+
+# Presents the user with a search bar
+# options -> The options to search within
+def presentSearchInput(options):
+    # Enter the action loop
+    answer = None
+    while True:
+        # Ask the user for a query
+        query = managedInputForced('Search '+str(len(options))+' items')
+
+        # Get the items that are similar in string form
+        results = [option for option in options if query.lower() in str(option).lower()]
+
+        # Add the search again option
+        results.append(':Search Again')
+
+        # Ask the user if any of the results are what they want
+        answerIndex = int(presentTextMenu(None, results))
+
+        # Check if a selected answer
+        if answerIndex != (len(results)-1):
+            # Set the answer and exit
+            answer = results[answerIndex]
+            break
+
+    # Return the selected answer
+    return answer

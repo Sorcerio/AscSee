@@ -117,11 +117,11 @@ def askForAdvancedSettings():
 
     # Get the text colors
     print('\nDefault text colors: '+', '.join(ac.getDefaultTextColors()))
-    textColors = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Select')
+    textColors = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Confirm')
 
     # Get a background color
     print('\nDefault background color is '+str(ac.getDefaultBackgroundColor())+'.')
-    backgroundColor = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Select', maxSelect=1)[0]
+    backgroundColor = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Confirm', maxSelect=1)[0]
 
     # Send back the result
     return (warp, textColors, backgroundColor)
