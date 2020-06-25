@@ -519,7 +519,7 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
 # cancelOption -> The text shown for the option that cancels input. If None is provided, no cancel option is shown
 # nextOption -> The text shown for the option that allows movement to the next page
 # prevOption -> The text shown for the option that allows movement to the previous page
-def presentPagedMultiSelect(title, choices, confirmOption, perPage = 5, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
+def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
     # Prepare the selected answers list
     answers = []
 
@@ -533,6 +533,7 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 5, cancelOp
         # Print the title
         print(TITLE_MARKER_LEFT+" "+title+" "+TITLE_MARKER_RIGHT)
         print('Page '+str(curPage+1)+' of '+str(len(choices)))
+        print('Selected: '+(', '.join(answers) if len(answers) > 0 else 'None'))
 
         # Copy the current page choices
         curChoices = choices[curPage].copy()
