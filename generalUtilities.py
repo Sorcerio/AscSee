@@ -526,7 +526,7 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
     if minSelect <= 0:
         minSelect = 1
 
-    if maxSelect < minSelect:
+    if maxSelect != -1 and maxSelect < minSelect:
         maxSelect = minSelect
 
     # Prepare the selected answers list
@@ -592,7 +592,7 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
         # Decide what to do with the choice
         if choice == (':'+str(confirmOption)):
             # Check if the minimum amount of items has been selected
-            if len(answers) > minSelect:
+            if len(answers) >= minSelect:
                 # Mark as finished
                 finished = True
                 break
@@ -618,6 +618,7 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, minSelec
                 # Remove the choice from answers
                 answers.remove(choice)
             else:
+                print(maxSelect)
                 # Check if above the max items
                 if maxSelect != -1 and len(answers) >= maxSelect:
                     # Report the issue

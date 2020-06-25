@@ -90,7 +90,7 @@ def choiceConvertItem(targetType):
     backgroundColor = ac.getDefaultBackgroundColor()
     if gu.askUserYesNo('Modify advanced options?', True):
         # Advanced options
-        (warp, backgroundColor) = askForAdvancedSettings()
+        (warp, textColors, backgroundColor) = askForAdvancedSettings()
 
     # Start the clocker
     gu.startClocker('img2ascii', '\nStarted clocking...')
@@ -115,15 +115,16 @@ def askForAdvancedSettings():
     print('\nDefault warp is '+str(ac.getDefaultWarp())+'.')
     warp = gu.managedInputNumberForced('Enter a warp value')
 
-    # TODO: Write a way to multiselect from colors neatly in a small console window
+    # Get the text colors
+    print('\nDefault text colors: '+', '.join(ac.getDefaultTextColors()))
+    textColors = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Select')
 
     # Get a background color
     print('\nDefault background color is '+str(ac.getDefaultBackgroundColor())+'.')
-    print('A list of webcolors can be found here: https://www.w3schools.com/colors/colors_names.asp')
-    backgroundColor = gu.askUser('Enter a Web Color as background color', COLORS_WEB,False)
+    backgroundColor = gu.presentPagedMultiSelect(None, COLORS_WEB, 'Select', maxSelect=1)[0]
 
     # Send back the result
-    return (warp, backgroundColor)
+    return (warp, textColors, backgroundColor)
 
 # Main Thread Execution
 if __name__=='__main__':
