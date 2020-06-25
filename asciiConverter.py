@@ -405,6 +405,9 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
         # Capture the current frame
         moreFrames, imageCv = vidCap.read()
 
+        # TODO: Compare current frame to previous frame and if they match, skip rendering the frame again. Instead simply add the previous frame
+        #   to the video and carry on as such until a different frame is reached
+
         # Check if more frames are present
         if moreFrames:
             # Convert the CV image to a Pil image
