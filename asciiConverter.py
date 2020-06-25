@@ -55,7 +55,7 @@ def getColors():
     return COLORS_WEB
 
 ## Processing Functions
-# Converts the provided 
+# Converts the provided to the image to a list of ASCII representing the image's pixels
 def imageToAsciiList(image, warp = DEFAULT_WARP):
     # Check if verbose status should be stated
     if VERBOSE:
@@ -86,6 +86,34 @@ def imageToAsciiList(image, warp = DEFAULT_WARP):
 
     # Return the ascii list
     return imageAsciiList
+
+# Gets the colors of the pixels within an image in list format. For each entry in the list a color is
+#   represented in a tuple as the following: (R, G, B[, A]). Alpha value will only appear for images
+#   using RGBA (like .pngs) and will not appear for images using RGB (like .jpgs)
+def imageToColorList(image, warp = DEFAULT_WARP):
+    # Check if verbose status should be stated
+    if VERBOSE:
+        print('Converting image to color list...')
+
+    # Get the image's size
+    (imgWidth, imgHeight) = image.size
+
+    # Get the pixel data from the image
+    pixelData = list(image.getdata())
+
+    # Build the pixel color list
+    pixelColors = [color for color in pixelData]
+
+    # Check if a subsampling size is set
+    if warp > 0:
+        pixelColors = pixelColors[0::warp]
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        print('Image to color conversion done.')
+
+    # Return the pixel colors
+    return pixelColors
 
 # Converts the provided image to an ASCII representation string
 # image -> The image to convert to ASCII
