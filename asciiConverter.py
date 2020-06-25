@@ -255,6 +255,73 @@ def imageToAsciiImage(inputImage, fontName, fontSize, warp = DEFAULT_WARP, textC
     # Return the output image
     return outputImage
 
+# Converts the provided image to an ASCII image object while retaining the colors of the pixel each character represents
+# inputImage -> A PIL image object to convert to ASCII
+# fontName -> The path to a valid font file with extension. Only .ttf files supported.
+# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
+# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
+def imageToAsciiImageColor(inputImage, fontName, fontSize, warp = DEFAULT_WARP):
+    # Get the size of the input image
+    (inputW, inputH) = inputImage.size
+
+    # Build the ascii image list
+    imageAsciiList = imageToAsciiList(inputImage, warp)
+
+    # Build the ascii color list
+    imageColorList = imageToColorList(inputImage, warp)
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the build image response
+        print('Building output color image...')
+
+    # Create an output image
+    outputImage = Image.new('RGB', (inputW, inputH), 'black')
+
+    # Prepare the output image to be drawn on
+    outputDraw = ImageDraw.Draw(outputImage)
+
+    # Build the draw font
+    font = ImageFont.truetype(fontName, fontSize)
+
+    # Calculate the max amount of characters for width and height
+    maxCharW = int(inputW/fontSize)
+    maxCharH = int(inputH/fontSize)
+
+    # Calculate the required step for the width and height to match output
+    widthStep = int(inputW/maxCharW) # for char
+    heightStep = int(inputH/maxCharH) # for line
+
+    # Loop through the ascii list
+    cursorY = 0
+    colorIndex = 0
+    for lineInd in range(0, len(imageAsciiList), widthStep):
+        # Get the line
+        line = imageAsciiList[lineInd]
+
+        # Loop through the appropriate amount of characters for the row
+        cursorX = 0
+        for charInd in range(0, len(line), heightStep):
+            # Draw the character
+            outputDraw.text((cursorX, cursorY), line[charInd], imageColorList[colorIndex], font)
+
+            # Iterate x cursor
+            cursorX = cursorX+fontSize
+
+            # Iterate the color index
+            colorIndex += 1
+
+        # Increase y cursor
+        cursorY = cursorY+fontSize
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the build image done response
+        print('Done building output color image.')
+
+    # Return the output image
+    return outputImage
+
 # Calculates and return the aspect ratio of the provided size values
 def calculateAspectRatio(width, height):
     # Calculate the greates common denominator
