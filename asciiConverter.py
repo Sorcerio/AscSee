@@ -17,26 +17,6 @@ DEFAULT_WARP = 0
 DEFAULT_TEXT_COLORS = ['white']
 DEFAULT_BACKGROUND_COLOR = 'black'
 
-## Example Thread
-def example(filepath, newWidth = DEFAULT_NEW_WIDTH):
-    # Enter image conversion try/catch
-    try:
-        # Try to get the image
-        image = Image.open(filepath)
-
-        # Convert the image to ASCII
-        image = imageToAsciiString(image, newWidth)
-
-        # Return the image
-        return image
-    except Exception as err:
-        # Print the problem
-        print("Image at "+str(image)+" could not opened.")
-        print(err)
-
-        # Send back nothing
-        return None
-
 ## Management Functions
 # Toggles the verbose flop
 def toggleVerbose():
@@ -365,13 +345,5 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
 
 ## Main Thread Execution
 if __name__=='__main__':
-    # Import System to get parameters
-    import sys
-
-    # Convert the image
-    asciiString = example(sys.argv[1])
-
-    # Save the ASCII image to a file
-    with open('output.txt', 'w') as wFile:
-        # Write the text out
-        wFile.write(asciiString)
+    # Report this is a package
+    print('asciiConverter.py is a package, not an executable Python script.')
