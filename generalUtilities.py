@@ -581,8 +581,13 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 8, cancelOp
             # Iterate to the previous page
             curPage -= 1
         else:
-            # Add the selected to the answers list
-            answers.append(choice)
+            # Check if choice is in answers
+            if choice in answers:
+                # Remove the choice from answers
+                answers.remove(choice)
+            else:
+                # Add the selected to the answers list
+                answers.append(choice)
 
     # Return the selected answers
     return answers
