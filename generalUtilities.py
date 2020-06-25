@@ -508,7 +508,17 @@ def endClocker(key, message = 'Completed in ', seperator = ', ', retain = False)
         # Report the problem
         print('GeneralUtlities: No clocker exists for the key, \''+str(key)+'\'')
 
-# TODO: Write the description and arguments
+# Allows the user to select multiple options from a provided list of choices that are displayed in a pageinated
+#   fashion for easy reading. Returns a list of the selected answers, or None if a cancelOption was provided and
+#   the user chooses it.
+# title -> The title to display on the menu
+# choices -> A list of the possible choices. Ensure your choices do not have the same String as any of your
+#   values for the various options!
+# confirmOption -> The text shown for the option that confirms the current selection
+# perPage -> Indicates how many items shown per page
+# cancelOption -> The text shown for the option that cancels input. If None is provided, no cancel option is shown
+# nextOption -> The text shown for the option that allows movement to the next page
+# prevOption -> The text shown for the option that allows movement to the previous page
 def presentPagedMultiSelect(title, choices, confirmOption, perPage = 5, cancelOption = None, nextOption = 'Next Page', prevOption = 'Prev Page'):
     # Prepare the selected answers list
     answers = []
@@ -548,13 +558,30 @@ def presentPagedMultiSelect(title, choices, confirmOption, perPage = 5, cancelOp
         # Present a text menu with the current options
         choice = int(presentTextMenu(None, curChoices))
 
-        print(choice)
+        # Get the actual choice text from the option
+        choice = curChoices[choice]
 
-        # TODO: Confirm option
-        # TODO: Cancel Option
-        # TODO: Next page option
-        # TODO: Prev page option
-        # TODO: else: Add to the answers list
+        # Decide what to do with the choice
+        if choice == (':'+str(confirmOption)):
+            # Mark as finished
+            finished = True
+            break
+        elif choice == (':'+str(cancelOption)):
+            # Set the answers to None
+            answers = None
+
+            # Mark as finished
+            finished = True
+            break
+        elif choice == (':'+str(nextOption)):
+            # Iterate to the next page
+            curPage += 1
+        elif choice == (':'+str(prevOption)):
+            # Iterate to the previous page
+            curPage -= 1
+        else:
+            # Add the selected to the answers list
+            answers.append(choice)
 
     # Return the selected answers
     return answers
