@@ -353,8 +353,10 @@ def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = DEFAULT_WARP
     # Loop through the filepath array
     i = 1
     for filepath in filepaths:
-        # Print the image being process
-        print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
+        # Check if verbose status should be stated
+        if VERBOSE:
+            # Print the image being process
+            print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
 
         # Process the image
         processImageToAscii(filepath, ('output'+str(i)), fontFile, fontSize, warp, textColors, backgroundColor)
@@ -375,15 +377,19 @@ def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = DEFAULT_WARP
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
 # fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
 def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Report the video file being loaded
-    print('> Loading video file...')
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Report the video file being loaded
+        print('> Loading video file...')
 
     # Capture the video file
     vidCap = cv.VideoCapture(filepath)
 
-    # Report the video file loaded and frame processing start
-    print('> Loaded video file.')
-    print('> Processing video frames, this may take a while...')
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Report the video file loaded and frame processing start
+        print('> Loaded video file.')
+        print('> Processing video frames, this may take a while...')
 
     # Get the details of the video
     vidFrameCount = int(vidCap.get(cv.CAP_PROP_FRAME_COUNT))
@@ -398,32 +404,47 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
     # Enter the frame loop
     moreFrames = True
     frameCount = 1
+    prevFrame = None
+    prevAscii = None
     while(moreFrames):
-        # Report the frame being processed
-        print('> Processing frame '+str(frameCount)+'/'+str(vidFrameCount))
+        # Check if verbose status should be stated
+        if VERBOSE:
+            # Report the frame being processed
+            print('> Processing frame '+str(frameCount)+'/'+str(vidFrameCount))
 
-        # Capture the current frame
+        # Get if there are more frames and the current frame image
         moreFrames, imageCv = vidCap.read()
-
-        # TODO: Compare current frame to previous frame and if they match, skip rendering the frame again. Instead simply add the previous frame
-        #   to the video and carry on as such until a different frame is reached
 
         # Check if more frames are present
         if moreFrames:
-            # Convert the CV image to a Pil image
-            imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
+            # Make sure the current frame is not the same as the previous
+            if not np.array_equal(imageCv, prevFrame):
+                # Convert the CV image to a Pil image
+                imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
-            # Convert the Pil image to an ASCII image in Pil format
-            imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
+                # Convert the Pil image to an ASCII image in Pil format
+                imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
 
-            # Convert the ASCII image to a numpy array
-            imageAsciiArray = np.array(imageAscii)
+                # Convert the ASCII image to a numpy array
+                imageAsciiArray = np.array(imageAscii)
 
-            # Convert the image back to a CV image
-            imageCvAscii = cv.cvtColor(imageAsciiArray, cv.COLOR_RGB2BGR)
+                # Convert the image back to a CV image
+                imageCvAscii = cv.cvtColor(imageAsciiArray, cv.COLOR_RGB2BGR)
 
-            # Send the image to the video writter
-            vidWritter.write(imageCvAscii)
+                # Send the image to the video writter
+                vidWritter.write(imageCvAscii)
+
+                # Assign the previous frame and ASCII render
+                prevFrame = imageCv
+                prevAscii = imageCvAscii
+            else:
+                # Check if verbose status should be stated
+                if VERBOSE:
+                    # Report the frame being processed
+                    print('Skipping render for frame '+str(frameCount)+' because: duplicate')
+
+                # Write the previous ASCII image to the video
+                vidWritter.write(prevAscii)
         else:
             # Exit the loop
             break
@@ -438,8 +459,10 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
     # Make sure any CV windows are closed
     cv.destroyAllWindows()
 
-    # Report the frames have been process
-    print('> Video frames processed.')
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Report the frames have been process
+        print('> Video frames processed.')
 
 ## Main Thread Execution
 if __name__=='__main__':
