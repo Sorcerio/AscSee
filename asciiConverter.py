@@ -398,32 +398,43 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
     # Enter the frame loop
     moreFrames = True
     frameCount = 1
+    prevFrame = None
+    prevAscii = None
     while(moreFrames):
         # Report the frame being processed
         print('> Processing frame '+str(frameCount)+'/'+str(vidFrameCount))
 
-        # Capture the current frame
+        # Get if there are more frames and the current frame image
         moreFrames, imageCv = vidCap.read()
-
-        # TODO: Compare current frame to previous frame and if they match, skip rendering the frame again. Instead simply add the previous frame
-        #   to the video and carry on as such until a different frame is reached
 
         # Check if more frames are present
         if moreFrames:
-            # Convert the CV image to a Pil image
-            imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
+            # Make sure the current frame is not the same as the previous
+            if not np.array_equal(imageCv, prevFrame):
+                # Convert the CV image to a Pil image
+                imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
-            # Convert the Pil image to an ASCII image in Pil format
-            imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
+                # Convert the Pil image to an ASCII image in Pil format
+                imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
 
-            # Convert the ASCII image to a numpy array
-            imageAsciiArray = np.array(imageAscii)
+                # Convert the ASCII image to a numpy array
+                imageAsciiArray = np.array(imageAscii)
 
-            # Convert the image back to a CV image
-            imageCvAscii = cv.cvtColor(imageAsciiArray, cv.COLOR_RGB2BGR)
+                # Convert the image back to a CV image
+                imageCvAscii = cv.cvtColor(imageAsciiArray, cv.COLOR_RGB2BGR)
 
-            # Send the image to the video writter
-            vidWritter.write(imageCvAscii)
+                # Send the image to the video writter
+                vidWritter.write(imageCvAscii)
+
+                # Assign the previous frame and ASCII render
+                prevFrame = imageCv
+                prevAscii = imageCvAscii
+            else:
+                # Report the frame being processed
+                print('Skipping render for frame '+str(frameCount)+' because: duplicate')
+
+                # Write the previous ASCII image to the video
+                vidWritter.write(prevAscii)
         else:
             # Exit the loop
             break
