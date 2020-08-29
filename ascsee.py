@@ -107,7 +107,7 @@ def manipulateImage(specs):
         ac.processImageToAscii(specs)
     elif targetType == 'video':
         # Process the video
-        # ac.videoToAsciiVideoFile(specs)
+        ac.videoToAsciiVideoFile(specs)
         pass
     else:
         # Report a problem

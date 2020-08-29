@@ -328,6 +328,16 @@ def calculateAspectRatio(width, height):
 # Checks for the required specs within the provided render specifications and fills them with the default values if they are not specified.
 # For optional render specifications, the function simply adds the default value for the entry but does so silently.
 def validateSpecs(specs):
+    # Check for a path
+    if 'path' not in specs:
+        print('Specifications Validator: No Input File was provided in the specs. Could not continue.')
+        raise FileNotFoundError
+
+    # Check for an output
+    if 'output' not in specs:
+        print('Specifications Validator: No Output File was provided in the specs. Could not continue.')
+        raise FileNotFoundError
+
     # Check for a font file
     if 'fontFile' not in specs:
         print('Specifications Validator: No Font File was provided in the specs. Could not continue.')
