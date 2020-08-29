@@ -26,7 +26,7 @@ def menuMain(choice):
         choiceProcessOrder()
     elif choice == '1':
         # Run the order creation wizard
-        print('TODO: Run the Order Creation Wizard.')
+        choiceOrderWizard()
     elif choice == '2':
         # Convert Image
         choiceConvertItem('image')
@@ -157,6 +157,15 @@ def choiceProcessOrder():
 
         # End the clocker
         gu.endClocker('orderProcesser', message='\nOrder completed in ')
+
+# Triggers the order creation wizard
+def choiceOrderWizard():
+    # Prepare the orders
+    orders = []
+
+    # Enter the add another loop
+    while gu.askUserYesNo('Would you like to add another task', True):
+        pass
 
 # Main Thread Execution
 if __name__=='__main__':
