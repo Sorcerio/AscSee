@@ -343,32 +343,6 @@ def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = DEFAULT
     # Save the image
     outputImage.save(str(outputName)+'.png')
 
-# Processes a list of filepaths into ASCII image rendered .png files
-def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the batch process start
-        print('Starting batch process with '+str(len(filepaths))+' images...')
-
-    # Loop through the filepath array
-    i = 1
-    for filepath in filepaths:
-        # Check if verbose status should be stated
-        if VERBOSE:
-            # Print the image being process
-            print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
-
-        # Process the image
-        processImageToAscii(filepath, ('output'+str(i)), fontFile, fontSize, warp, textColors, backgroundColor)
-
-        # Iterate
-        i = i+1
-
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the batch process end
-        print('Finished batch process.')
-
 # Converts a provided video file into an OpenCV video object
 # NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of
 #       15 seconds took about 30 minutes to render
