@@ -179,9 +179,31 @@ def choiceOrderWizard():
     # Prepare the orders
     orders = []
 
+    # Print the welcome message
+    print('\n[ Render Order Wizard ]')
+
     # Enter the add another loop
-    while gu.askUserYesNo('Would you like to add another task', True):
-        pass
+    addedAtLeastOne = False
+    while (not addedAtLeastOne) or gu.askUserYesNo('Would you like to add another task', True):
+        # Ask the user to choose the media type
+        print('Select the type of media being added to the order.')
+        targetTypeChoices = ['image', 'video']
+        targetTypeIndex = int(gu.presentTextMenu(None, targetTypeChoices))
+
+        # Collect and add manipulation specs
+        orders.append(collectManipulationSpecs(targetTypeChoices[targetTypeIndex]))
+
+        # Set added at least one
+        addedAtLeastOne = True
+
+        # Add a spacer
+        print('')
+
+    print(orders)
+
+    # Ask if the user wants to save the order
+
+    # Ask if the user wants to run the order
 
 # Main Thread Execution
 if __name__=='__main__':
