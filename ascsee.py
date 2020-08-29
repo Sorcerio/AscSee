@@ -15,18 +15,24 @@ def main():
     ac.toggleVerbose()
 
     # Present the main menu
-    gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
+    gu.textMenu('AscSee', ['Process Order', 'Order Creation Wizard', 'Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
 
 # Functions
 # Handles the main menu inputs
 def menuMain(choice):
     if choice == '0':
+        # Process an order
+        print('TODO: Process order files.')
+    elif choice == '1':
+        # Run the order creation wizard
+        print('TODO: Run the Order Creation Wizard.')
+    elif choice == '2':
         # Convert Image
         choiceConvertItem('image')
-    elif choice == '1':
+    elif choice == '3':
         # Convert Video
         choiceConvertItem('video')
-    elif choice == '2':
+    elif choice == '4':
         # Settings Menu
         gu.textMenu('AscSee Settings', ['Set Font File'], 'Back', menuSettings)
 
