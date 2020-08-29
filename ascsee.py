@@ -63,13 +63,13 @@ def menuSettings(choice):
 # Triggers the Convert Image logic
 def choiceConvertItem(targetType):
     # Collect the image specs
-    (filepath, outputName, fontSize, textColors, backgroundColor, warp) = collectImageSpecs(targetType)
+    (filepath, outputName, fontSize, textColors, backgroundColor, warp) = collectManipulationSpecs(targetType)
 
     # Manipulate the image
     manipulateImage(targetType, filepath, outputName, FONT_FONT, fontSize, textColors, backgroundColor, warp)
 
 # Asks the user for the specifications for rendering the item
-def collectImageSpecs(targetType):
+def collectManipulationSpecs(targetType):
     # Get the filepath
     filepath = gu.managedInputForced('Enter the filepath of the source '+targetType)
 
