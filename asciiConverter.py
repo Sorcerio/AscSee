@@ -171,16 +171,16 @@ def mapPixelsToAscii(image):
 def imagePathToAsciiImage(specs):
     # Check if filepath is provided
     if 'path' in specs:
-        # # Try to get the input image
-        # try:
         # Try to get the input image
-        inputImage = Image.open(specs['path'])
+        try:
+            # Try to get the input image
+            inputImage = Image.open(specs['path'])
 
-        # Convert and return the image
-        return imageToAsciiImage(inputImage, specs)
-        # except Exception as err:
-        #     # Print the problem
-        #     print("Image at "+str(specs['path'])+" could not opened.")
+            # Convert and return the image
+            return imageToAsciiImage(inputImage, specs)
+        except Exception as err:
+            # Print the problem
+            print("Image at "+str(specs['path'])+" could not opened.")
 
     # Return an error image
     return Image.new('RGB', (100, 100), 'red')
