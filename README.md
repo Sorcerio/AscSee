@@ -56,3 +56,31 @@ The video below shows all three videos next to each other for easy comparison.
 ### Instructions for Command Line Interface
 As the cliche goes, the Command Line Interface is simple to use. It can be run by simply by executing `ascsee.py` with Python. Once activated, the program will move through a series of menus allowing for the selection of images or videos and advanced settings for the render. Most errors are caught, however, it should be noted that the Command Line Interface is intended primarily as a demo for the functions within AscSee.
 Regardless, be sure you have a _valid_ font file specified in the `ascsee.py` file. By default it uses `./arial.tff` which should be a font most computers will have. You just simply need to link to it where it exists on your computer with a direct filepath, or copy the `.tff` file to the AscSee directory (this is how it was done in testing).
+
+### Example Order Part
+This is an example of the structure of keys and values for both JSON order parts and the Python data objects of the same.
+```JSON
+{
+    "type": "image",
+    "path": "testImage.jpg",
+    "output": "output",
+    "warp": 0,
+    "fontFile": "arial.ttf",
+    "fontSize": 16,
+    "fontColors": [
+        "white"
+    ],
+    "backgroundColor": "black"
+}
+```
+* `type` is an indicator for the code as to if the provided `path` should be parsed as an image or as a video file.
+    * Should always be `image` or `video`.
+* `path` is the path to media that should be manipulated.
+    * Should include the file extension.
+* `output` is the path that the manipulated image should be outputted to.
+    * Should _not_ include the file extension.
+* `warp` the amount of visual warp to apply to the image.
+* `fontFile` the font file that will be used in the render.
+* `fontSize` the size of the font used in the render.
+* `fontColors` the colors that can be used in the render for the text.
+* `backgroundColor` the color that will be used for the background of the render.
