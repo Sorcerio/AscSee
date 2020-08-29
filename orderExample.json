@@ -1,7 +1,7 @@
 [
     {
         "type": "image",
-        "path": "./testImage.jpg",
+        "path": "./DemoImages/imageBase.png",
         "output": "output",
         "fontFile": "./arial.ttf",
         "fontSize": 16,

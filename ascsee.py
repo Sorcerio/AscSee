@@ -4,6 +4,7 @@
 # Imports
 import asciiConverter as ac
 import generalUtilities as gu
+import json
 
 # Variables
 FONT_FONT = 'arial.ttf' # Only in .ttf
@@ -22,7 +23,7 @@ def main():
 def menuMain(choice):
     if choice == '0':
         # Process an order
-        print('TODO: Process order files.')
+        choiceProcessOrder()
     elif choice == '1':
         # Run the order creation wizard
         print('TODO: Run the Order Creation Wizard.')
@@ -116,6 +117,24 @@ def askForAdvancedSettings():
 
     # Send back the result
     return (warp, fontSize, textColors, backgroundColor)
+
+# Trigger the process order logic process
+def choiceProcessOrder():
+    # Ask for the order filepath
+    orderPath = gu.managedInput('Enter the path to the desired order file', 'Cancel')
+
+    # Check if an order file was provided
+    if orderPath != None:
+        try:
+            # Load the order file
+            orderData = gu.readFullFile(orderPath)
+
+            # Parse the json
+            order = json.loads(orderData)
+
+            print(order)
+        except FileNotFoundError:
+            print("File at '"+orderPath+"' could not be found.")
 
 # Main Thread Execution
 if __name__=='__main__':
