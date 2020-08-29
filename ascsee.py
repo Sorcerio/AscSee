@@ -62,43 +62,52 @@ def menuSettings(choice):
 
 # Triggers the Convert Image logic
 def choiceConvertItem(targetType):
-    # Collect the image specs
-    (filepath, outputName, fontSize, textColors, backgroundColor, warp) = collectManipulationSpecs(targetType)
+    # Collect the item's render specs
+    specs = collectManipulationSpecs(targetType)
 
     # Manipulate the image
-    manipulateImage(targetType, filepath, outputName, FONT_FONT, fontSize, textColors, backgroundColor, warp)
+    manipulateImage(specs)
 
-# Asks the user for the specifications for rendering the item
+# Asks the user for the specifications for rendering the item and returns the specs dictionary
 def collectManipulationSpecs(targetType):
+    # Prepare the specs dictionary
+    specs = {
+        "type": targetType
+    }
+
     # Get the filepath
-    filepath = gu.managedInputForced('Enter the filepath of the source '+targetType)
+    specs['path'] = gu.managedInputForced('Enter the filepath of the source '+targetType)
 
     # Get the output name
-    outputName = gu.managedInputForced('Enter the name for the output file (without extension)')
+    specs['output'] = gu.managedInputForced('Enter the name for the output file (without extension)')
 
     # Ask if advanced options are needed
-    warp = ac.getDefaultWarp()
-    fontSize = FONT_SIZE
-    textColors = ac.getDefaultTextColors()
-    backgroundColor = ac.getDefaultBackgroundColor()
+    specs['warp'] = ac.getDefaultWarp()
+    specs['fontFile'] = FONT_FONT
+    specs['fontSize'] = FONT_SIZE
+    specs['fontColors'] = ac.getDefaultTextColors()
+    specs['backgroundColor'] = ac.getDefaultBackgroundColor()
     if gu.askUserYesNo('Modify advanced options?', True):
         # Advanced options
-        (warp, fontSize, textColors, backgroundColor) = askForAdvancedSettings()
+        (specs['warp'], specs['fontSize'], specs['fontColors'], specs['backgroundColor']) = askForAdvancedSettings()
 
-    return (filepath, outputName, fontSize, textColors, backgroundColor, warp)
+    return specs
 
-# Runs the image manipulations with the provided parameters
-def manipulateImage(targetType, filepath, outputName, fontFile, fontSize, fontColors, backgroundColor, warp):
+# Runs the image manipulations with the provided render specifications
+def manipulateImage(specs):
     # Start the clocker
     gu.startClocker('img2ascii', '\nStarted clocking...')
+
+    # Pull the the target type
+    targetType = specs['type']
 
     # Decide which function to run
     if targetType == 'image':
         # Process the image
-        ac.processImageToAscii(filepath, outputName, FONT_FONT, fontSize, warp, fontColors, backgroundColor)
+        ac.processImageToAscii(specs)
     elif targetType == 'video':
         # Process the video
-        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, fontSize, warp, fontColors, backgroundColor)
+        ac.videoToAsciiVideoFile(specs)
     else:
         # Report a problem
         print(str(targetType)+' is not a valid conversion target type.')
@@ -154,7 +163,7 @@ def choiceProcessOrder():
                 print('\nProcessing order part '+str(partNum)+'/'+str(len(order))+': '+part['path'])
                 
                 # Manipulate the image according to the order
-                manipulateImage(part['type'], part['path'], part['output'], part['fontFile'], part['fontSize'], part['fontColors'], part['backgroundColor'], part['warp'])
+                manipulateImage(part)
 
                 # Iterate
                 partNum += 1
