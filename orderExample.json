@@ -1,0 +1,26 @@
+[
+    {
+        "type": "image",
+        "path": "./DemoImages/imageBase.png",
+        "output": "output",
+        "fontFile": "./arial.ttf",
+        "fontSize": 16,
+        "fontColors": [
+            "white"
+        ],
+        "backgroundColor": "black",
+        "warp": 0
+    },
+    {
+        "type": "image",
+        "path": "./DemoImages/imageBase.png",
+        "output": "output2",
+        "fontFile": "./arial.ttf",
+        "fontSize": 16,
+        "fontColors": [
+            "black"
+        ],
+        "backgroundColor": "white",
+        "warp": 0
+    }
+]

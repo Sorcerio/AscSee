@@ -4,6 +4,7 @@
 # Imports
 import asciiConverter as ac
 import generalUtilities as gu
+import json
 
 # Variables
 FONT_FONT = 'arial.ttf' # Only in .ttf
@@ -15,18 +16,24 @@ def main():
     ac.toggleVerbose()
 
     # Present the main menu
-    gu.textMenu('AscSee', ['Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
+    gu.textMenu('AscSee', ['Process Order', 'Order Creation Wizard', 'Convert Image', 'Convert Video', 'Settings'], 'Quit', menuMain)
 
 # Functions
 # Handles the main menu inputs
 def menuMain(choice):
     if choice == '0':
+        # Process an order
+        choiceProcessOrder()
+    elif choice == '1':
+        # Run the order creation wizard
+        choiceOrderWizard()
+    elif choice == '2':
         # Convert Image
         choiceConvertItem('image')
-    elif choice == '1':
+    elif choice == '3':
         # Convert Video
         choiceConvertItem('video')
-    elif choice == '2':
+    elif choice == '4':
         # Settings Menu
         gu.textMenu('AscSee Settings', ['Set Font File'], 'Back', menuSettings)
 
@@ -55,31 +62,52 @@ def menuSettings(choice):
 
 # Triggers the Convert Image logic
 def choiceConvertItem(targetType):
+    # Collect the item's render specs
+    specs = collectManipulationSpecs(targetType)
+
+    # Manipulate the image
+    manipulateImage(specs)
+
+# Asks the user for the specifications for rendering the item and returns the specs dictionary
+def collectManipulationSpecs(targetType):
+    # Prepare the specs dictionary
+    specs = {
+        "type": targetType
+    }
+
     # Get the filepath
-    filepath = gu.managedInputForced('Enter the filepath of the source '+targetType)
+    specs['path'] = gu.managedInputForced('Enter the filepath of the source '+targetType)
 
     # Get the output name
-    outputName = gu.managedInputForced('Enter the name for the output file (without extension)')
+    specs['output'] = gu.managedInputForced('Enter the name for the output file (without extension)')
 
     # Ask if advanced options are needed
-    warp = ac.getDefaultWarp()
-    fontSize = FONT_SIZE
-    textColors = ac.getDefaultTextColors()
-    backgroundColor = ac.getDefaultBackgroundColor()
+    specs['warp'] = ac.getDefaultWarp()
+    specs['fontFile'] = FONT_FONT
+    specs['fontSize'] = FONT_SIZE
+    specs['fontColors'] = ac.getDefaultTextColors()
+    specs['backgroundColor'] = ac.getDefaultBackgroundColor()
     if gu.askUserYesNo('Modify advanced options?', True):
         # Advanced options
-        (warp, fontSize, textColors, backgroundColor) = askForAdvancedSettings()
+        (specs['warp'], specs['fontSize'], specs['fontColors'], specs['backgroundColor']) = askForAdvancedSettings()
 
+    return specs
+
+# Runs the image manipulations with the provided render specifications
+def manipulateImage(specs):
     # Start the clocker
     gu.startClocker('img2ascii', '\nStarted clocking...')
+
+    # Pull the the target type
+    targetType = specs['type']
 
     # Decide which function to run
     if targetType == 'image':
         # Process the image
-        ac.processImageToAscii(filepath, outputName, FONT_FONT, fontSize, warp, textColors, backgroundColor)
+        ac.processImageToAscii(specs)
     elif targetType == 'video':
         # Process the video
-        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, fontSize, warp, textColors, backgroundColor)
+        ac.videoToAsciiVideoFile(specs)
     else:
         # Report a problem
         print(str(targetType)+' is not a valid conversion target type.')
@@ -110,6 +138,86 @@ def askForAdvancedSettings():
 
     # Send back the result
     return (warp, fontSize, textColors, backgroundColor)
+
+# Trigger the process order logic process
+def choiceProcessOrder():
+    # Ask for the order filepath
+    orderPath = gu.managedInput('Enter the path to the desired order file', 'Cancel')
+
+    # Check if an order file was provided
+    if orderPath != None:
+        try:
+            # Load the order file
+            orderData = gu.readFullFile(orderPath)
+
+            # Parse the json
+            order = json.loads(orderData)
+
+            # Process the order
+            processOrder(order)
+        except FileNotFoundError:
+            print("File at '"+orderPath+"' could not be found.")
+
+# Processes a list of order entries
+def processOrder(order):
+    # Start the clocker
+    gu.startClocker('orderProcesser', '\nStarted order clocking...')
+
+    # Loop through the order
+    partNum = 1
+    for part in order:
+        # Report the current item
+        print('\nProcessing order part '+str(partNum)+'/'+str(len(order))+': '+part['path'])
+        
+        # Manipulate the image according to the order
+        manipulateImage(part)
+
+        # Iterate
+        partNum += 1
+
+    # End the clocker
+    gu.endClocker('orderProcesser', message='\nOrder completed in ')
+
+# Triggers the order creation wizard
+def choiceOrderWizard():
+    # Prepare the orders
+    orders = []
+
+    # Print the welcome message
+    print('\n[ Render Order Wizard ]')
+
+    # Enter the add another loop
+    addedAtLeastOne = False
+    while (not addedAtLeastOne) or gu.askUserYesNo('Would you like to add another task', True):
+        # Ask the user to choose the media type
+        print('Select the type of media being added to the order.')
+        targetTypeChoices = ['image', 'video']
+        targetTypeIndex = int(gu.presentTextMenu(None, targetTypeChoices))
+
+        # Collect and add manipulation specs
+        orders.append(collectManipulationSpecs(targetTypeChoices[targetTypeIndex]))
+
+        # Set added at least one
+        addedAtLeastOne = True
+
+        # Add a spacer
+        print('')
+
+    # Ask if the user wants to save the order
+    if gu.askUserYesNo('Do you want to save the order to a file', True):
+        # Convert the orders to a json
+        ordersJson = json.dumps(orders)
+
+        # Get the file name
+        outputFileName = gu.managedInputForced('Enter the desired order file\'s name (without extension)')
+
+        # Write the order's json file
+        gu.writeFullFile(outputFileName+'.json', ordersJson)
+
+    # Ask if the user wants to run the order
+    if gu.askUserYesNo('Do you want to run the order now', True):
+        # Process the order
+        processOrder(orders)
 
 # Main Thread Execution
 if __name__=='__main__':

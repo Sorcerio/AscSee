@@ -136,3 +136,5 @@ arial.ttf
 output*
 test*
 SavedTests/
+*.json
+!orderExample.json

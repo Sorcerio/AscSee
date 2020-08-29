@@ -12,6 +12,7 @@ import random
 VERBOSE = False
 USED_CHARS = ['#','?','%','.','S','+','.','*',':',',','@']
 COLORS_WEB = ['AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure', 'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue', 'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse', 'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson', 'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray', 'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen', 'DarkOrange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen', 'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet', 'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue', 'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro', 'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey', 'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed', 'Indigo', 'Ivory', 'Khaki', 'Lavender', 'LavenderBlush', 'LawnGreen', 'LemonChiffon', 'LightBlue', 'LightCoral', 'LightCyan', 'LightGoldenRodYellow', 'LightGray', 'LightGrey', 'LightGreen', 'LightPink', 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSlateGray', 'LightSlateGrey', 'LightSteelBlue', 'LightYellow', 'Lime', 'LimeGreen', 'Linen', 'Magenta', 'Maroon', 'MediumAquaMarine', 'MediumBlue', 'MediumOrchid', 'MediumPurple', 'MediumSeaGreen', 'MediumSlateBlue', 'MediumSpringGreen', 'MediumTurquoise', 'MediumVioletRed', 'MidnightBlue', 'MintCream', 'MistyRose', 'Moccasin', 'NavajoWhite', 'Navy', 'OldLace', 'Olive', 'OliveDrab', 'Orange', 'OrangeRed', 'Orchid', 'PaleGoldenRod', 'PaleGreen', 'PaleTurquoise', 'PaleVioletRed', 'PapayaWhip', 'PeachPuff', 'Peru', 'Pink', 'Plum', 'PowderBlue', 'Purple', 'RebeccaPurple', 'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Salmon', 'SandyBrown', 'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue', 'SlateGray', 'SlateGrey', 'Snow', 'SpringGreen', 'SteelBlue', 'Tan', 'Teal', 'Thistle', 'Tomato', 'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen']
+DEFAULT_FONT_SIZE = 16
 DEFAULT_NEW_WIDTH = 100
 DEFAULT_WARP = 0
 DEFAULT_TEXT_COLORS = ['white']
@@ -165,47 +166,37 @@ def mapPixelsToAscii(image):
     # Return the pixel characters list as a joined string
     return ''.join(pixelChars)
 
-# Converts an image at the specified filepath to an ASCII image object
-# filepath -> The path to a valid image file with extension.
-# fontName -> The path to a valid font file with extension. Only .ttf files supported.
-# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
-# textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
-#   for each drawn character. If None is provided, a color will be chosen randomly for each character
-# backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imagePathToAsciiImage(filepath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Try to get the input image
-    try:
+# Converts an image at the specified filepath to an ASCII image object with the provided render specifications.
+# NOTE: Check the Read Me for details on the format of the specifications dictionary.
+def imagePathToAsciiImage(specs):
+    # Check if filepath is provided
+    if 'path' in specs:
         # Try to get the input image
-        inputImage = Image.open(filepath)
+        try:
+            # Try to get the input image
+            inputImage = Image.open(specs['path'])
 
-        # Convert and return the image
-        return imageToAsciiImage(inputImage, fontName, fontSize, warp, textColors, backgroundColor)
-    except Exception as err:
-        # Print the problem
-        print("Image at "+str(inputImage)+" could not opened.")
+            # Convert and return the image
+            return imageToAsciiImage(inputImage, specs)
+        except Exception as err:
+            # Print the problem
+            print("Image at "+str(specs['path'])+" could not opened.")
 
-        # Return an error image
-        return Image.new('RGB', (100, 100), 'red')
+    # Return an error image
+    return Image.new('RGB', (100, 100), 'red')
 
-# Converts the provided image to an ASCII image object
+# Converts the provided image to an ASCII image object with the provided 
+# NOTE: Check the Read Me for details on the format of the specifications dictionary.
 # inputImage -> A PIL image object to convert to ASCII
-# fontName -> The path to a valid font file with extension. Only .ttf files supported.
-# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
-# textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
-#   for each drawn character. If None is provided, a color will be chosen randomly for each character
-# backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imageToAsciiImage(inputImage, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Check if text colors is None
-    if textColors == None:
-        textColors = COLORS_WEB
+def imageToAsciiImage(inputImage, specs):
+    # Validate the provided specs
+    specs = validateSpecs(specs)
 
     # Get the size of the input image
     (inputW, inputH) = inputImage.size
 
     # Build the ascii image list
-    imageAsciiList = imageToAsciiList(inputImage, warp)
+    imageAsciiList = imageToAsciiList(inputImage, specs['warp'])
 
     # Check if verbose status should be stated
     if VERBOSE:
@@ -213,17 +204,17 @@ def imageToAsciiImage(inputImage, fontName, fontSize, warp = DEFAULT_WARP, textC
         print('Building output image...')
 
     # Create an output image
-    outputImage = Image.new('RGB', (inputW, inputH), backgroundColor)
+    outputImage = Image.new('RGB', (inputW, inputH), specs['backgroundColor'])
 
     # Prepare the output image to be drawn on
     outputDraw = ImageDraw.Draw(outputImage)
 
     # Build the draw font
-    font = ImageFont.truetype(fontName, fontSize)
+    font = ImageFont.truetype(specs['fontFile'], specs['fontSize'])
 
     # Calculate the max amount of characters for width and height
-    maxCharW = int(inputW/fontSize)
-    maxCharH = int(inputH/fontSize)
+    maxCharW = int(inputW/specs['fontSize'])
+    maxCharH = int(inputH/specs['fontSize'])
 
     # Calculate the required step for the width and height to match output
     widthStep = int(inputW/maxCharW) # for char
@@ -239,13 +230,13 @@ def imageToAsciiImage(inputImage, fontName, fontSize, warp = DEFAULT_WARP, textC
         cursorX = 0
         for charInd in range(0, len(line), heightStep):
             # Draw the character
-            outputDraw.text((cursorX, cursorY), line[charInd], random.choice(textColors), font)
+            outputDraw.text((cursorX, cursorY), line[charInd], random.choice(specs['fontColors']), font)
 
             # Iterate x cursor
-            cursorX = cursorX+fontSize
+            cursorX = cursorX+specs['fontSize']
 
         # Increase y cursor
-        cursorY = cursorY+fontSize
+        cursorY = cursorY+specs['fontSize']
 
     # Check if verbose status should be stated
     if VERBOSE:
@@ -334,56 +325,83 @@ def calculateAspectRatio(width, height):
     # Return them in a tuple
     return (arW, arH)
 
+# Checks for the required specs within the provided render specifications and fills them with the default values if they are not specified.
+# For optional render specifications, the function simply adds the default value for the entry but does so silently.
+def validateSpecs(specs):
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the validating specs
+        print('Validating provided render specifications...')
+
+    # Check for a path
+    if 'path' not in specs:
+        print('Specifications Validator: No Input File was provided in the specs. Could not continue.')
+        raise FileNotFoundError
+
+    # Check for an output
+    if 'output' not in specs:
+        print('Specifications Validator: No Output File was provided in the specs. Could not continue.')
+        raise FileNotFoundError
+
+    # Check for a font file
+    if 'fontFile' not in specs:
+        print('Specifications Validator: No Font File was provided in the specs. Could not continue.')
+        raise FileNotFoundError
+
+    # Check for a font size
+    if 'fontSize' not in specs:
+        print('Specifications Validator: Set the font size to the default of '+str(DEFAULT_FONT_SIZE)+'.')
+        specs['fontSize'] = DEFAULT_FONT_SIZE
+
+    # Check for font colors
+    if 'fontColors' not in specs:
+        specs['fontColors'] = DEFAULT_TEXT_COLORS
+
+    # Check for background color
+    if 'backgroundColor' not in specs:
+        specs['backgroundColor'] = DEFAULT_BACKGROUND_COLOR
+
+    # Check for warp
+    if 'warp' not in specs:
+        specs['warp'] = DEFAULT_WARP
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print finished validating specs
+        print('Finished validating render specifications.')
+
+    # Return the modified specs
+    return specs
+
 ## Deployment Functions
-# Processes a single filepath into an ASCII image rendered .png file
-def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Process the image to an ASCII image
-    outputImage = imagePathToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
+# Processes a single filepath into an ASCII image rendered .png file with the provided specs
+# NOTE: Check the Read Me for details on the format of the specifications dictionary.
+def processImageToAscii(specs):
+    # Check if an output name was provided
+    if 'output' in specs:
+        # Process the image to an ASCII image
+        outputImage = imagePathToAsciiImage(specs)
 
-    # Save the image
-    outputImage.save(str(outputName)+'.png')
-
-# Processes a list of filepaths into ASCII image rendered .png files
-def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the batch process start
-        print('Starting batch process with '+str(len(filepaths))+' images...')
-
-    # Loop through the filepath array
-    i = 1
-    for filepath in filepaths:
-        # Check if verbose status should be stated
-        if VERBOSE:
-            # Print the image being process
-            print('Processing '+str(filepath)+'('+str(i)+'/'+str(len(filepaths))+')')
-
-        # Process the image
-        processImageToAscii(filepath, ('output'+str(i)), fontFile, fontSize, warp, textColors, backgroundColor)
-
-        # Iterate
-        i = i+1
-
-    # Check if verbose status should be stated
-    if VERBOSE:
-        # Print the batch process end
-        print('Finished batch process.')
+        # Save the image
+        outputImage.save(specs['output']+'.png')
+    else:
+        # Report a problem
+        print('ERROR: No output file was provided for conversion.')
 
 # Converts a provided video file into an OpenCV video object
-# NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of
-#       15 seconds took about 30 minutes to render
-# filepath -> The video file to convert with extension with .mp4 extension.
-# outputPath -> The output path file to save the converted video to with .mp4 extension.
-# fontName -> The path to a valid font file with extension. Only .ttf files supported.
-# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
+# NOTE: (1) This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of 15 seconds took about 30 minutes to render.
+# NOTE: (2) Check the Read Me for details on the format of the specifications dictionary.
+def videoToAsciiVideoFile(specs):
+    # Validate the provided specs
+    specs = validateSpecs(specs)
+
     # Check if verbose status should be stated
     if VERBOSE:
         # Report the video file being loaded
         print('> Loading video file...')
 
     # Capture the video file
-    vidCap = cv.VideoCapture(filepath)
+    vidCap = cv.VideoCapture(specs['path'])
 
     # Check if verbose status should be stated
     if VERBOSE:
@@ -399,7 +417,7 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
 
     # Open the video writer
     vidWritterFourCC = cv.VideoWriter_fourcc(*'MP4V') # MP4V, X264
-    vidWritter = cv.VideoWriter(outputPath+'.mp4', vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
+    vidWritter = cv.VideoWriter(specs['output']+'.mp4', vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
 
     # Enter the frame loop
     moreFrames = True
@@ -423,7 +441,7 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
                 imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
                 # Convert the Pil image to an ASCII image in Pil format
-                imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
+                imageAscii = imageToAsciiImage(imagePil, specs)
 
                 # Convert the ASCII image to a numpy array
                 imageAsciiArray = np.array(imageAscii)
