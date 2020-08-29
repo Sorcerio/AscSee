@@ -199,9 +199,16 @@ def choiceOrderWizard():
         # Add a spacer
         print('')
 
-    print(orders)
-
     # Ask if the user wants to save the order
+    if gu.askUserYesNo('Do you want to save the order to a file', True):
+        # Convert the orders to a json
+        ordersJson = json.dumps(orders)
+
+        # Get the file name
+        outputFileName = gu.managedInputForced('Enter the desired order file\'s name (without extension)')
+
+        # Write the order's json file
+        gu.writeFullFile(outputFileName, ordersJson)
 
     # Ask if the user wants to run the order
 
