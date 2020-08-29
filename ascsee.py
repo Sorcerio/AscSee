@@ -212,11 +212,12 @@ def choiceOrderWizard():
         outputFileName = gu.managedInputForced('Enter the desired order file\'s name (without extension)')
 
         # Write the order's json file
-        gu.writeFullFile(outputFileName, ordersJson)
+        gu.writeFullFile(outputFileName+'.json', ordersJson)
 
     # Ask if the user wants to run the order
     if gu.askUserYesNo('Do you want to run the order now', True):
-        pass
+        # Process the order
+        processOrder(orders)
 
 # Main Thread Execution
 if __name__=='__main__':
