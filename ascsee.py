@@ -77,16 +77,21 @@ def choiceConvertItem(targetType):
         # Advanced options
         (warp, fontSize, textColors, backgroundColor) = askForAdvancedSettings()
 
+    # Manipulate the image
+    manipulateImage(targetType, filepath, outputName, FONT_FONT, fontSize, textColors, backgroundColor, warp)
+
+# Runs the image manipulations with the provided parameters
+def manipulateImage(targetType, filepath, outputName, fontFile, fontSize, fontColors, backgroundColor, warp):
     # Start the clocker
     gu.startClocker('img2ascii', '\nStarted clocking...')
 
     # Decide which function to run
     if targetType == 'image':
         # Process the image
-        ac.processImageToAscii(filepath, outputName, FONT_FONT, fontSize, warp, textColors, backgroundColor)
+        ac.processImageToAscii(filepath, outputName, FONT_FONT, fontSize, warp, fontColors, backgroundColor)
     elif targetType == 'video':
         # Process the video
-        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, fontSize, warp, textColors, backgroundColor)
+        ac.videoToAsciiVideoFile(filepath, outputName, FONT_FONT, fontSize, warp, fontColors, backgroundColor)
     else:
         # Report a problem
         print(str(targetType)+' is not a valid conversion target type.')
@@ -132,7 +137,10 @@ def choiceProcessOrder():
             # Parse the json
             order = json.loads(orderData)
 
-            print(order)
+            # Loop through the order
+            for part in order:
+                print(part)
+
         except FileNotFoundError:
             print("File at '"+orderPath+"' could not be found.")
 
