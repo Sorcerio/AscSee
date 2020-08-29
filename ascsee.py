@@ -146,9 +146,6 @@ def choiceProcessOrder():
 
     # Check if an order file was provided
     if orderPath != None:
-        # Start the clocker
-        gu.startClocker('orderProcesser', '\nStarted order clocking...')
-
         try:
             # Load the order file
             orderData = gu.readFullFile(orderPath)
@@ -156,23 +153,30 @@ def choiceProcessOrder():
             # Parse the json
             order = json.loads(orderData)
 
-            # Loop through the order
-            partNum = 1
-            for part in order:
-                # Report the current item
-                print('\nProcessing order part '+str(partNum)+'/'+str(len(order))+': '+part['path'])
-                
-                # Manipulate the image according to the order
-                manipulateImage(part)
-
-                # Iterate
-                partNum += 1
-
+            # Process the order
+            processOrder(order)
         except FileNotFoundError:
             print("File at '"+orderPath+"' could not be found.")
 
-        # End the clocker
-        gu.endClocker('orderProcesser', message='\nOrder completed in ')
+# Processes a list of order entries
+def processOrder(order):
+    # Start the clocker
+    gu.startClocker('orderProcesser', '\nStarted order clocking...')
+
+    # Loop through the order
+    partNum = 1
+    for part in order:
+        # Report the current item
+        print('\nProcessing order part '+str(partNum)+'/'+str(len(order))+': '+part['path'])
+        
+        # Manipulate the image according to the order
+        manipulateImage(part)
+
+        # Iterate
+        partNum += 1
+
+    # End the clocker
+    gu.endClocker('orderProcesser', message='\nOrder completed in ')
 
 # Triggers the order creation wizard
 def choiceOrderWizard():
@@ -211,6 +215,8 @@ def choiceOrderWizard():
         gu.writeFullFile(outputFileName, ordersJson)
 
     # Ask if the user wants to run the order
+    if gu.askUserYesNo('Do you want to run the order now', True):
+        pass
 
 # Main Thread Execution
 if __name__=='__main__':
