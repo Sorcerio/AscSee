@@ -1,0 +1,14 @@
+[
+    {
+        "type": "image",
+        "path": "./testImage.jpg",
+        "output": "output",
+        "fontFile": "./arial.ttf",
+        "fontSize": 16,
+        "fontColors": [
+            "white"
+        ],
+        "backgroundColor": "black",
+        "warp": 0
+    }
+]

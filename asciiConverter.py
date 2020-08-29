@@ -373,7 +373,7 @@ def processBatchImagesToAscii(filepaths, fontFile, fontSize, warp = DEFAULT_WARP
 # NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of
 #       15 seconds took about 30 minutes to render
 # filepath -> The video file to convert with extension with .mp4 extension.
-# outputPath -> The output path file to save the converted video to with .mp4 extension.
+# outputPath -> The output path file to save the converted video to with .mp4 extension. DO NOT include the extension it will be added by the code.
 # fontName -> The path to a valid font file with extension. Only .ttf files supported.
 # fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
 def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
