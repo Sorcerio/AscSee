@@ -12,6 +12,7 @@ import random
 VERBOSE = False
 USED_CHARS = ['#','?','%','.','S','+','.','*',':',',','@']
 COLORS_WEB = ['AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine', 'Azure', 'Beige', 'Bisque', 'Black', 'BlanchedAlmond', 'Blue', 'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue', 'Chartreuse', 'Chocolate', 'Coral', 'CornflowerBlue', 'Cornsilk', 'Crimson', 'Cyan', 'DarkBlue', 'DarkCyan', 'DarkGoldenRod', 'DarkGray', 'DarkGrey', 'DarkGreen', 'DarkKhaki', 'DarkMagenta', 'DarkOliveGreen', 'DarkOrange', 'DarkOrchid', 'DarkRed', 'DarkSalmon', 'DarkSeaGreen', 'DarkSlateBlue', 'DarkSlateGray', 'DarkSlateGrey', 'DarkTurquoise', 'DarkViolet', 'DeepPink', 'DeepSkyBlue', 'DimGray', 'DimGrey', 'DodgerBlue', 'FireBrick', 'FloralWhite', 'ForestGreen', 'Fuchsia', 'Gainsboro', 'GhostWhite', 'Gold', 'GoldenRod', 'Gray', 'Grey', 'Green', 'GreenYellow', 'HoneyDew', 'HotPink', 'IndianRed', 'Indigo', 'Ivory', 'Khaki', 'Lavender', 'LavenderBlush', 'LawnGreen', 'LemonChiffon', 'LightBlue', 'LightCoral', 'LightCyan', 'LightGoldenRodYellow', 'LightGray', 'LightGrey', 'LightGreen', 'LightPink', 'LightSalmon', 'LightSeaGreen', 'LightSkyBlue', 'LightSlateGray', 'LightSlateGrey', 'LightSteelBlue', 'LightYellow', 'Lime', 'LimeGreen', 'Linen', 'Magenta', 'Maroon', 'MediumAquaMarine', 'MediumBlue', 'MediumOrchid', 'MediumPurple', 'MediumSeaGreen', 'MediumSlateBlue', 'MediumSpringGreen', 'MediumTurquoise', 'MediumVioletRed', 'MidnightBlue', 'MintCream', 'MistyRose', 'Moccasin', 'NavajoWhite', 'Navy', 'OldLace', 'Olive', 'OliveDrab', 'Orange', 'OrangeRed', 'Orchid', 'PaleGoldenRod', 'PaleGreen', 'PaleTurquoise', 'PaleVioletRed', 'PapayaWhip', 'PeachPuff', 'Peru', 'Pink', 'Plum', 'PowderBlue', 'Purple', 'RebeccaPurple', 'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Salmon', 'SandyBrown', 'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue', 'SlateGray', 'SlateGrey', 'Snow', 'SpringGreen', 'SteelBlue', 'Tan', 'Teal', 'Thistle', 'Tomato', 'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen']
+DEFAULT_FONT_SIZE = 16
 DEFAULT_NEW_WIDTH = 100
 DEFAULT_WARP = 0
 DEFAULT_TEXT_COLORS = ['white']
@@ -170,16 +171,16 @@ def mapPixelsToAscii(image):
 def imagePathToAsciiImage(specs):
     # Check if filepath is provided
     if 'path' in specs:
+        # # Try to get the input image
+        # try:
         # Try to get the input image
-        try:
-            # Try to get the input image
-            inputImage = Image.open(specs['path'])
+        inputImage = Image.open(specs['path'])
 
-            # Convert and return the image
-            return imageToAsciiImage(inputImage, specs)
-        except Exception as err:
-            # Print the problem
-            print("Image at "+str(specs['path'])+" could not opened.")
+        # Convert and return the image
+        return imageToAsciiImage(inputImage, specs)
+        # except Exception as err:
+        #     # Print the problem
+        #     print("Image at "+str(specs['path'])+" could not opened.")
 
     # Return an error image
     return Image.new('RGB', (100, 100), 'red')
@@ -188,15 +189,14 @@ def imagePathToAsciiImage(specs):
 # NOTE: Check the Read Me for details on the format of the specifications dictionary.
 # inputImage -> A PIL image object to convert to ASCII
 def imageToAsciiImage(inputImage, specs):
-    # Check if text colors is None
-    if textColors == None:
-        textColors = COLORS_WEB
+    # Validate the provided specs
+    specs = validateSpecs(specs)
 
     # Get the size of the input image
     (inputW, inputH) = inputImage.size
 
     # Build the ascii image list
-    imageAsciiList = imageToAsciiList(inputImage, warp)
+    imageAsciiList = imageToAsciiList(inputImage, specs['warp'])
 
     # Check if verbose status should be stated
     if VERBOSE:
@@ -324,6 +324,34 @@ def calculateAspectRatio(width, height):
 
     # Return them in a tuple
     return (arW, arH)
+
+# Checks for the required specs within the provided render specifications and fills them with the default values if they are not specified.
+# For optional render specifications, the function simply adds the default value for the entry but does so silently.
+def validateSpecs(specs):
+    # Check for a font file
+    if 'fontFile' not in specs:
+        print('Specifications Validator: No Font File was provided in the specs. Could not continue.')
+        raise FileNotFoundError
+
+    # Check for a font size
+    if 'fontSize' not in specs:
+        print('Specifications Validator: Set the font size to the default of '+str(DEFAULT_FONT_SIZE)+'.')
+        specs['fontSize'] = DEFAULT_FONT_SIZE
+
+    # Check for font colors
+    if 'fontColors' not in specs:
+        specs['fontColors'] = DEFAULT_TEXT_COLORS
+
+    # Check for background color
+    if 'backgroundColor' not in specs:
+        specs['backgroundColor'] = DEFAULT_BACKGROUND_COLOR
+
+    # Check for warp
+    if 'warp' not in specs:
+        specs['warp'] = DEFAULT_WARP
+
+    # Return the modified specs
+    return specs
 
 ## Deployment Functions
 # Processes a single filepath into an ASCII image rendered .png file with the provided specs
