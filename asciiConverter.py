@@ -328,6 +328,11 @@ def calculateAspectRatio(width, height):
 # Checks for the required specs within the provided render specifications and fills them with the default values if they are not specified.
 # For optional render specifications, the function simply adds the default value for the entry but does so silently.
 def validateSpecs(specs):
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print the validating specs
+        print('Validating provided render specifications...')
+
     # Check for a path
     if 'path' not in specs:
         print('Specifications Validator: No Input File was provided in the specs. Could not continue.')
@@ -359,6 +364,11 @@ def validateSpecs(specs):
     # Check for warp
     if 'warp' not in specs:
         specs['warp'] = DEFAULT_WARP
+
+    # Check if verbose status should be stated
+    if VERBOSE:
+        # Print finished validating specs
+        print('Finished validating render specifications.')
 
     # Return the modified specs
     return specs
