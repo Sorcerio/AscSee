@@ -391,14 +391,17 @@ def processImageToAscii(specs):
 # Converts a provided video file into an OpenCV video object
 # NOTE: (1) This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of 15 seconds took about 30 minutes to render.
 # NOTE: (2) Check the Read Me for details on the format of the specifications dictionary.
-def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
+def videoToAsciiVideoFile(specs):
+    # Validate the provided specs
+    specs = validateSpecs(specs)
+
     # Check if verbose status should be stated
     if VERBOSE:
         # Report the video file being loaded
         print('> Loading video file...')
 
     # Capture the video file
-    vidCap = cv.VideoCapture(filepath)
+    vidCap = cv.VideoCapture(specs['path'])
 
     # Check if verbose status should be stated
     if VERBOSE:
@@ -414,7 +417,7 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
 
     # Open the video writer
     vidWritterFourCC = cv.VideoWriter_fourcc(*'MP4V') # MP4V, X264
-    vidWritter = cv.VideoWriter(outputPath+'.mp4', vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
+    vidWritter = cv.VideoWriter(specs['output']+'.mp4', vidWritterFourCC, vidFrameSpeed, (vidW, vidH))
 
     # Enter the frame loop
     moreFrames = True
@@ -438,7 +441,7 @@ def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAU
                 imagePil = Image.fromarray(cv.cvtColor(imageCv, cv.COLOR_BGR2RGB))
 
                 # Convert the Pil image to an ASCII image in Pil format
-                imageAscii = imageToAsciiImage(imagePil, fontName, fontSize, warp, textColors, backgroundColor)
+                imageAscii = imageToAsciiImage(imagePil, specs)
 
                 # Convert the ASCII image to a numpy array
                 imageAsciiArray = np.array(imageAscii)
