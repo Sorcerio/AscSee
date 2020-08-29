@@ -204,17 +204,17 @@ def imageToAsciiImage(inputImage, specs):
         print('Building output image...')
 
     # Create an output image
-    outputImage = Image.new('RGB', (inputW, inputH), backgroundColor)
+    outputImage = Image.new('RGB', (inputW, inputH), specs['backgroundColor'])
 
     # Prepare the output image to be drawn on
     outputDraw = ImageDraw.Draw(outputImage)
 
     # Build the draw font
-    font = ImageFont.truetype(fontName, fontSize)
+    font = ImageFont.truetype(specs['fontFile'], specs['fontSize'])
 
     # Calculate the max amount of characters for width and height
-    maxCharW = int(inputW/fontSize)
-    maxCharH = int(inputH/fontSize)
+    maxCharW = int(inputW/specs['fontSize'])
+    maxCharH = int(inputH/specs['fontSize'])
 
     # Calculate the required step for the width and height to match output
     widthStep = int(inputW/maxCharW) # for char
@@ -230,13 +230,13 @@ def imageToAsciiImage(inputImage, specs):
         cursorX = 0
         for charInd in range(0, len(line), heightStep):
             # Draw the character
-            outputDraw.text((cursorX, cursorY), line[charInd], random.choice(textColors), font)
+            outputDraw.text((cursorX, cursorY), line[charInd], random.choice(specs['fontColors']), font)
 
             # Iterate x cursor
-            cursorX = cursorX+fontSize
+            cursorX = cursorX+specs['fontSize']
 
         # Increase y cursor
-        cursorY = cursorY+fontSize
+        cursorY = cursorY+specs['fontSize']
 
     # Check if verbose status should be stated
     if VERBOSE:
