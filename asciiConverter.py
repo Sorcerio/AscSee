@@ -165,38 +165,29 @@ def mapPixelsToAscii(image):
     # Return the pixel characters list as a joined string
     return ''.join(pixelChars)
 
-# Converts an image at the specified filepath to an ASCII image object
-# filepath -> The path to a valid image file with extension.
-# fontName -> The path to a valid font file with extension. Only .ttf files supported.
-# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
-# textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
-#   for each drawn character. If None is provided, a color will be chosen randomly for each character
-# backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imagePathToAsciiImage(filepath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Try to get the input image
-    try:
+# Converts an image at the specified filepath to an ASCII image object with the provided render specifications.
+# NOTE: Check the Read Me for details on the format of the specifications dictionary.
+def imagePathToAsciiImage(specs):
+    # Check if filepath is provided
+    if 'path' in specs:
         # Try to get the input image
-        inputImage = Image.open(filepath)
+        try:
+            # Try to get the input image
+            inputImage = Image.open(specs['path'])
 
-        # Convert and return the image
-        return imageToAsciiImage(inputImage, fontName, fontSize, warp, textColors, backgroundColor)
-    except Exception as err:
-        # Print the problem
-        print("Image at "+str(inputImage)+" could not opened.")
+            # Convert and return the image
+            return imageToAsciiImage(inputImage, specs)
+        except Exception as err:
+            # Print the problem
+            print("Image at "+str(specs['path'])+" could not opened.")
 
-        # Return an error image
-        return Image.new('RGB', (100, 100), 'red')
+    # Return an error image
+    return Image.new('RGB', (100, 100), 'red')
 
-# Converts the provided image to an ASCII image object
+# Converts the provided image to an ASCII image object with the provided 
+# NOTE: Check the Read Me for details on the format of the specifications dictionary.
 # inputImage -> A PIL image object to convert to ASCII
-# fontName -> The path to a valid font file with extension. Only .ttf files supported.
-# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
-# warp -> How much warp to apply to the generation of the string. Can create duplications of the image, etc.
-# textColors -> The colors for the text to be (use the names of common HTML colors). A color is chosen randomly from the list.
-#   for each drawn character. If None is provided, a color will be chosen randomly for each character
-# backgroundColor -> The color the backgrond should be (use the name of a common HTML color).
-def imageToAsciiImage(inputImage, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
+def imageToAsciiImage(inputImage, specs):
     # Check if text colors is None
     if textColors == None:
         textColors = COLORS_WEB
@@ -335,21 +326,23 @@ def calculateAspectRatio(width, height):
     return (arW, arH)
 
 ## Deployment Functions
-# Processes a single filepath into an ASCII image rendered .png file
-def processImageToAscii(filepath, outputName, fontFile, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
-    # Process the image to an ASCII image
-    outputImage = imagePathToAsciiImage(filepath, fontFile, fontSize, warp, textColors, backgroundColor)
+# Processes a single filepath into an ASCII image rendered .png file with the provided specs
+# NOTE: Check the Read Me for details on the format of the specifications dictionary.
+def processImageToAscii(specs):
+    # Check if an output name was provided
+    if 'output' in specs:
+        # Process the image to an ASCII image
+        outputImage = imagePathToAsciiImage(specs)
 
-    # Save the image
-    outputImage.save(str(outputName)+'.png')
+        # Save the image
+        outputImage.save(specs['output']+'.png')
+    else:
+        # Report a problem
+        print('ERROR: No output file was provided for conversion.')
 
 # Converts a provided video file into an OpenCV video object
-# NOTE: This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of
-#       15 seconds took about 30 minutes to render
-# filepath -> The video file to convert with extension with .mp4 extension.
-# outputPath -> The output path file to save the converted video to with .mp4 extension. DO NOT include the extension it will be added by the code.
-# fontName -> The path to a valid font file with extension. Only .ttf files supported.
-# fontSize -> The size the font should be rendered at. Smaller sizes increase render time, but increase visual resolution.
+# NOTE: (1) This function _will_ take a long time to execute. A video encoded at 1080p 60fps with a length of 15 seconds took about 30 minutes to render.
+# NOTE: (2) Check the Read Me for details on the format of the specifications dictionary.
 def videoToAsciiVideoFile(filepath, outputPath, fontName, fontSize, warp = DEFAULT_WARP, textColors = DEFAULT_TEXT_COLORS, backgroundColor = DEFAULT_BACKGROUND_COLOR):
     # Check if verbose status should be stated
     if VERBOSE:
